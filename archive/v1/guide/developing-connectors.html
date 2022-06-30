@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Developing connectors </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Developing connectors ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="developing-connectors">Developing connectors</h1>
+
+<p>When you use the <code>create-i2connect-server</code> package to bootstrap a project, the resulting directory contains the i2 Connect server and a skeleton connector that you can use as a starting point for your own connectors.</p>
+<h2 id="running-the-server-during-development">Running the server during development</h2>
+<p>After bootstrapping, the server and its connector are ready to run with no modifications. To run the server in development mode:</p>
+<ol>
+<li><p>At a command prompt, navigate to the project directory and install the packages that the server requires:</p>
+<pre><code>npm install
+</code></pre></li>
+<li><p>Then, start the server, and build and start its connector:</p>
+<pre><code>npm start
+</code></pre></li>
+</ol>
+<p>In this mode, the server monitors the project source files for changes, and rebuilds the connector when necessary.</p>
+<h2 id="configuring-i2-analyze-to-use-the-connector">Configuring i2 Analyze to use the connector</h2>
+<p>To add your connector to an instance of i2 Analyze that includes the i2 Connect gateway, you can follow the general procedure for <a href="https://www.ibm.com/docs/en/SSXVTH_latest/com.ibm.i2.connect.developer.doc/i2_connect_topology.html">modifying the <code>topology.xml</code> file and updating the configuration</a>, with some small modifications:</p>
+<ul>
+<li><p>When you add the <code>&lt;connector-id&gt;</code> child element, the identifier that you provide must match the name of the class that implements the connector:</p>
+<pre><code class="lang-xml">&lt;connector-ids&gt;
+  &lt;connector-id value=&quot;ClassName&quot;/&gt;
+&lt;/connector-ids&gt;
+</code></pre></li>
+<li><p>In the <code>&lt;connector&gt;</code> element, the i2 Connect server uses the HTTP protocol and port 3000 by default, and the connector identifier forms part of the configuration URL:</p>
+<pre><code class="lang-xml">&lt;connectors&gt;
+  &lt;connector id=&quot;ClassName&quot;
+             name=&quot;ConnectorName&quot;
+             base-url=&quot;http://HostName:3000&quot;
+             configuration-url=&quot;ClassName/config&quot;/&gt;
+&lt;/connectors&gt;
+</code></pre></li>
+</ul>
+<p>When you restart the i2 Analyze server, the i2 Connect gateway retrieves configuration information from this connector in the same way as for any other connector.</p>
+<p><strong>Note:</strong> In order for an user to see the new connector in their web or desktop client application, they must be a member of a group that has appropriate <a href="https://www.ibm.com/docs/en/SSXVTH_latest/com.ibm.i2.eia.go.live.doc/contolling_access_permissions.html">connector permissions</a> under command access control.</p>
+<h2 id="adding-a-connector-to-the-i2-connect-server">Adding a connector to the i2 Connect server</h2>
+<p>The <code>create-i2connect-server</code> package generates a single connector alongside the i2 Connect server. You can add another connector to the same project by running this command:</p>
+<pre><code>npm run i2connect generate connector &lt;name&gt;
+</code></pre><p>In a project that contains more than one connector, any build, start, or debug operation applies to all connectors simultaneously.</p>
+<h2 id="running-lint-on-connector-code">Running <code>lint</code> on connector code</h2>
+<p>The i2 Connect server includes the facility to run <code>lint</code> over your project source files with the following command:</p>
+<pre><code>npm run i2connect lint
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation (2022)
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
