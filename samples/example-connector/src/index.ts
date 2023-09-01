@@ -690,6 +690,11 @@ addService(
 );
 
 startConnector({
-  schemas: { connector: exampleSchema },
+  schemas: {
+    connector: {
+      ...exampleSchema,
+      schemaShortName: 'Example Connector',
+    },
+  },
   hasPersistentResultIds: true,
 });
