@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>spi namespace </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="spi namespace ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="i2connect.html">@i2analyze/i2connect</a> &gt; <a href="i2connect.spi.html">spi</a></p>
+<h2 id="spi-namespace">spi namespace</h2>
+<p>A JavaScript representation of the objects in the raw <a href="https://i2group.github.io/analyze-connect/content/rest/i2-connect-spi.html">i2 Connect gateway REST SPI</a>.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">export namespace spi 
+</code></pre><p><b>Introduced:</b>
+API version 2.3</p>
+<h2 id="type-aliases">Type Aliases</h2>
+<table>
+<thead>
+<tr>
+<th>Type Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.spi.async.html">Async</a></td>
+<td>Indicates that queries are asynchronous, and provides configuration settings. If this is present, then <strong>acquireUrl</strong> must not be present.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.asyncqueryresponse.html">AsyncQueryResponse</a></td>
+<td>The result of successfully starting an asynchronous query.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.asyncquerystatus.html">AsyncQueryStatus</a></td>
+<td>Information about the progress of an asynchronous query.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.asyncquerysubstatus.html">AsyncQuerySubstatus</a></td>
+<td>A message about the progress of an asynchronous query, which might be displayed to users.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.authconfig.html">AuthConfig</a></td>
+<td>Information about how to authenticate the users of a connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.authconfigform.html">AuthConfigForm</a></td>
+<td>A form that users complete with their credentials.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.authconfigformfield.html">AuthConfigFormField</a></td>
+<td>A field in an authentication form.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.authresponse.html">AuthResponse</a></td>
+<td>The result of successful user authentication.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.clientconfig.html">ClientConfig</a></td>
+<td>An indication of how a client should interact with the service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.clientconfigtype.html">ClientConfigType</a></td>
+<td>The type of the client configuration.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorconfig.html">ConnectorConfig</a></td>
+<td>Complete information about a connector for the i2 Connect gateway.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorconfigbase.html">ConnectorConfigBase</a></td>
+<td>Information about the services that a connector provides.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectordefaultvalues.html">ConnectorDefaultValues</a></td>
+<td>Settings for clients to apply to the data they receive, if the data does not indicate otherwise.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorseedconstraintitemtype.html">ConnectorSeedConstraintItemType</a></td>
+<td>A seed constraint that is based on the item type of seed records.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorseedconstraints.html">ConnectorSeedConstraints</a></td>
+<td>The constraints on the seeds that users can specify, or null if the service does not support seeds.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorseeditemtypes.html">ConnectorSeedItemTypes</a></td>
+<td>The item types that records must have in order to be used as seeds.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorseedsemanticpropertytypes.html">ConnectorSeedSemanticPropertyTypes</a></td>
+<td>The semantic types of properties that records must have in order to be used as seeds.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.connectorseedtypes.html">ConnectorSeedTypes</a></td>
+<td>The types that to be used as seeds.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodrequest.html">DaodRequest</a></td>
+<td>A search request that a service receives from a client.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodrequestcondition.html">DaodRequestCondition</a></td>
+<td>A condition in a search request.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodrequestpayload.html">DaodRequestPayload</a></td>
+<td>A custom payload that an i2 Connect service can use to determine what data to retrieve from a connected source.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodseedentitydata.html">DaodSeedEntityData</a></td>
+<td>The data from an entity record to be used as a seed in a search operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodseeditemdata.html">DaodSeedItemData</a></td>
+<td>Data from a record to be used as a seed in a search operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodseedlinkdata.html">DaodSeedLinkData</a></td>
+<td>The data from a link record to be used as a seed in a search operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.daodseeds.html">DaodSeeds</a></td>
+<td>The data from all the records that are to be used as seeds in a search operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.dateandtime.html">DateAndTime</a></td>
+<td>A fully qualified date and time, including a time zone.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.entitydataidentifier.html">EntityDataIdentifier</a></td>
+<td>The identifier of the data for a record in its source.<!-- -->If the record was a seed in the request, then this contains the seed identifier in string form. If the record is from the Information Store, then this contains the record identifier. Alternatively, the value can be a source identifier.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.entitydataidentifiersourceid.html">EntityDataIdentifierSourceId</a></td>
+<td>A source identifier being used to identify an entity or a link.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.extrastringvalidation.html">ExtraStringValidation</a></td>
+<td>A regular expression for extra validation of a string value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.feature.html">Feature</a></td>
+<td>A geospatial feature, which can be a point, a polygon, or a multi-polygon.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.featurecollection.html">FeatureCollection</a></td>
+<td>A collection of geospatial features.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.formconfig.html">FormConfig</a></td>
+<td>A form that is presented to users in the client.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.formconfigcondition.html">FormConfigCondition</a></td>
+<td>A condition in a form.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.formconfigsection.html">FormConfigSection</a></td>
+<td>A section in a form that is presented to users.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.formlogicaltype.html">FormLogicalType</a></td>
+<td>The logical type of a value that can be used in a form condition.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.geojsonmultipolygon.html">GeoJSONMultiPolygon</a></td>
+<td>The definitions of several polygons in geospace.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.geojsonpoint.html">GeoJSONPoint</a></td>
+<td>The definition of a point in geospace.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.geojsonpolygon.html">GeoJSONPolygon</a></td>
+<td>The definition of a polygon in geospace.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.geometry.html">Geometry</a></td>
+<td>A point or an area in geospace.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.geospatialcoordinate.html">GeospatialCoordinate</a></td>
+<td>An array in which the first element represents longitude, the second represents latitude, and the (optional) third represents altitude.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.i2connectdata.html">I2ConnectData</a></td>
+<td>The results of a request for data to an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.i2connectentitydata.html">I2ConnectEntityData</a></td>
+<td>An entity in the results of a request for data to an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.i2connectlinkdata.html">I2ConnectLinkData</a></td>
+<td>A link in the results of a request for data to an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.infostoreidentifier.html">InfoStoreIdentifier</a></td>
+<td>The identifier of a record in the Information Store.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.itemtype.html">ItemType</a></td>
+<td>An item type from an i2 Analyze schema.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.linkdirection.html">LinkDirection</a></td>
+<td>The logical direction of this link, expressed relative to its &#39;from&#39; and &#39;to&#39; ends.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.logicaltype.html">LogicalType</a></td>
+<td>The logical type of a value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.maxstringlength.html">MaxStringLength</a></td>
+<td>The maximum length of a string in a condition, expressed as a raw size with its units.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.payloadvalidationresponse.html">PayloadValidationResponse</a></td>
+<td>The result of validating the contents of a request for data.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.possibleconditionvalue.html">PossibleConditionValue</a></td>
+<td>A possible value for use by <code>SELECTED_FROM</code> and <code>SUGGESTED_FROM</code> conditions.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.problemdetails.html">ProblemDetails</a></td>
+<td>The contents of the result of a failed HTTP request.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.propertytype.html">PropertyType</a></td>
+<td>A property type of an item type from an i2 Analyze schema.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.propertyvaluetype.html">PropertyValueType</a></td>
+<td>The type of a property value of a record.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.resultitemtypeids.html">ResultItemTypeIds</a></td>
+<td>A set of item type identifiers from a particular schema.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.schematypelocation.html">SchemaTypeLocation</a></td>
+<td>The schema in which an item type is defined.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.securitydimensionandvalues.html">SecurityDimensionAndValues</a></td>
+<td>A set of values from a particular security dimension.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.seedsourceidentifier.html">SeedSourceIdentifier</a></td>
+<td>A source identifier in use as a seed identifier.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.semanticproperty.html">SemanticProperty</a></td>
+<td>A property of a semantic seed.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.semanticseed.html">SemanticSeed</a></td>
+<td>The properties of a record in use as a semantic seed.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.semantictypeidentifier.html">SemanticTypeIdentifier</a></td>
+<td>The identifier of the semantic type for this property type.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.service.html">Service</a></td>
+<td>A service that a connector for the i2 Connect gateway makes available.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.sourceidentifier.html">SourceIdentifier</a></td>
+<td>A source identifier.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.sourcereference.html">SourceReference</a></td>
+<td>A source reference for a record.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.sourcereferenceinfo.html">SourceReferenceInfo</a></td>
+<td>The information that the source reference contains.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.typelocation.html">TypeLocation</a></td>
+<td>The schema in which the item type is defined.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.userconnectorconfig.html">UserConnectorConfig</a></td>
+<td>User-specific information about the services that a connector provides.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerybooleancondition.html">VisualQueryBooleanCondition</a></td>
+<td>A Boolean condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerycondition.html">VisualQueryCondition</a></td>
+<td>A condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryconditionaspect.html">VisualQueryConditionAspect</a></td>
+<td>The aspect of the identified property or metadata to use in the Visual Query condition.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryconditionoperator.html">VisualQueryConditionOperator</a></td>
+<td>The operator to use in the Visual Query condition.<!-- -->Operations on logical types whose data type is <code>string</code> are case-insensitive. In the same context, a sequence of consecutive white space characters is equivalent to a single white space character.<!-- -->Operations on logical types whose data type is <code>Calendar</code> perform their comparisons at the level of milliseconds.<!-- -->Operations on logical types with other data types proceed as follows:<!-- -->- For <code>DECIMAL</code>, <code>java.math.BigDecimal#doubleValue()</code> is used for the comparison - For <code>DOUBLE</code>, <code>Double#equals(Object)</code> is used for the comparison - For <code>INTEGER</code>, <code>Integer#equals(Object)</code> is used for the comparison - For <code>BOOLEAN</code>, <code>Boolean#equals(Object)</code> is used for the comparison</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryconditionvaluetype.html">VisualQueryConditionValueType</a></td>
+<td>The type of the values to use in this query condition.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryconfig.html">VisualQueryConfig</a></td>
+<td>The configuration that governs the behavior and content of Visual Queries.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryconstraints.html">VisualQueryConstraints</a></td>
+<td>The constraints that apply to Visual Query structures.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerycountcondition.html">VisualQueryCountCondition</a></td>
+<td>A count condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerycountconditionoperator.html">VisualQueryCountConditionOperator</a></td>
+<td>The operator in a Visual Query count condition.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerydateandtimecondition.html">VisualQueryDateAndTimeCondition</a></td>
+<td>A date-and-time condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryentity.html">VisualQueryEntity</a></td>
+<td>A query entity in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryentityposition.html">VisualQueryEntityPosition</a></td>
+<td>The position of a query entity in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerygeospatialcondition.html">VisualQueryGeospatialCondition</a></td>
+<td>A geospatial condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryitem.html">VisualQueryItem</a></td>
+<td>A query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerylink.html">VisualQueryLink</a></td>
+<td>A query link in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerynumericcondition.html">VisualQueryNumericCondition</a></td>
+<td>A numeric condition on a query item in a Visual Query structure.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualqueryoperatorusagerule.html">VisualQueryOperatorUsageRule</a></td>
+<td>A rule that governs the property types and operators that can appear in the conditions of a query item.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerypaletteitemtypes.html">VisualQueryPaletteItemTypes</a></td>
+<td>The specification of which item types appear in the Visual Query palette.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.visualquerystringcondition.html">VisualQueryStringCondition</a></td>
+<td>A string condition on a query item in a Visual Query structure.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
