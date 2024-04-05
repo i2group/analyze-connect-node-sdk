@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>i2connect package </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="i2connect package ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="i2connect.html">@i2analyze/i2connect</a></p>
+<h2 id="i2connect-package">i2connect package</h2>
+<p>The i2 Connect package, which contains all the functionality you need to create connectors for i2 Analyze.</p>
+<h2 id="classes">Classes</h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.authenticationrequirederror.html">AuthenticationRequiredError</a></td>
+<td>An error indicating that authentication is required.</td>
+</tr>
+<tr>
+<td><a href="i2connect.detailederror.html">DetailedError</a></td>
+<td>An error indicating that a problem occurred during a service call.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="functions">Functions</h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.addservice.html">addService(config, acquire)</a></td>
+<td>Adds a service that provides an acquire callback to the connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.addservice_1.html">addService(config, callbacks)</a></td>
+<td>Adds a service that provides an acquire callback and an optional validate callback to the connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.addvisualqueryservice.html">addVisualQueryService(config, acquire)</a></td>
+<td>Adds a visual query service that provides an acquire callback to the connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.addvisualqueryservice_1.html">addVisualQueryService(config, callbacks)</a></td>
+<td>Adds a visual query service that provides an acquire callback and an optional validate callback to the connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.createauthenticator.html">createAuthenticator(config, authenticate)</a></td>
+<td>Creates an authenticator, which performs user authentication.</td>
+</tr>
+<tr>
+<td><a href="i2connect.createlogger.html">createLogger(id)</a></td>
+<td>Creates or retrieves a logger object with the specified identifier.</td>
+</tr>
+<tr>
+<td><a href="i2connect.startconnector.html">startConnector(config)</a></td>
+<td>Starts the connector. You must add all the services you need before you call this function.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interfaces">Interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.idetailederrordata.html">IDetailedErrorData</a></td>
+<td>A set of detailed error information for a <a href="i2connect.detailederror.html">DetailedError</a> object.</td>
+</tr>
+<tr>
+<td><a href="i2connect.ilogger.html">ILogger</a></td>
+<td>A diagnostic logger that i2 Connect services can use.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="namespaces">Namespaces</h2>
+<table>
+<thead>
+<tr>
+<th>Namespace</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.connectors.html">connectors</a></td>
+<td>The members of the <code>connectors</code> namespace allow you to configure the connectors that you create for the i2 Connect server.</td>
+</tr>
+<tr>
+<td><a href="i2connect.data.html">data</a></td>
+<td>The members of the <code>data</code> namespace provide access to the property values of records that an i2 Connect service operates on.</td>
+</tr>
+<tr>
+<td><a href="i2connect.records.html">records</a></td>
+<td>The members of the <code>records</code> namespace provide access to the contents of seed and result records in an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.schema.html">schema</a></td>
+<td>The members of the <code>schema</code> namespace provide access to the specifications that govern the structure of records in an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.html">services</a></td>
+<td>The members of the <code>services</code> namespace allow you to configure and implement the services in a connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.settings.html">settings</a></td>
+<td>The members of the <code>settings</code> namespace allow you to retrieve connector settings from environment variables and the configuration file.</td>
+</tr>
+<tr>
+<td><a href="i2connect.spi.html">spi</a></td>
+<td>A JavaScript representation of the objects in the raw <a href="https://i2group.github.io/analyze-connect/content/rest/i2-connect-spi.html">i2 Connect gateway REST SPI</a>.</td>
+</tr>
+<tr>
+<td><a href="i2connect.utility.html">utility</a></td>
+<td>The members of the <code>utility</code> namespace improve the TypeScript type information that&#39;s based on service configuration. You will rarely need to use the members of this namespace directly in your connector code.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="type-aliases">Type Aliases</h2>
+<table>
+<thead>
+<tr>
+<th>Type Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.loglevel.html">LogLevel</a></td>
+<td>The logging level, or severity, of log messages.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

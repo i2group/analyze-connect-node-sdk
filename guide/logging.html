@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Logging from service code </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Logging from service code ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="logging-from-service-code">Logging from service code</h1>
+
+<p>To add logging to your service, you can use an <code>ILogger</code> object that you create by calling the <code>createLogger()</code> function.</p>
+<p>If you do not pass any parameters to <code>createLogger()</code>, it returns the default logger for the i2 Connect SDK. Any log data that you add is written to the default <code>i2ConnectorServer.log</code> file and therefore interleaved with the logging information that the i2 Connect SDK generates.</p>
+<pre><code class="lang-typescript">import { createLogger } from &#39;@i2analyze/i2connect&#39;;
+
+const logger = createLogger();
+
+// This writes to the &quot;i2ConnectorServer.log&quot; file in the log directory
+logger.info(&#39;The service is running smoothly&#39;);
+</code></pre><p>To write your service&#39;s logs to their own file, you can pass a string-based identifier to the <code>createLogger()</code> function. i2 Connect uses that string to generate the file name in the format <code>${id}.log</code>. The file is stored in the log directory, as defined by the configuration file or environment variable.</p>
+<pre><code class="lang-typescript">import { createLogger } from &#39;@i2analyze/i2connect&#39;;
+
+const logger = createLogger(&#39;helloWorld&#39;);
+
+// This writes to a file named &quot;helloWorld.log&quot; in the log directory
+logger.info(&#39;The service is running smoothly&#39;);
+</code></pre><p>The <code>ILogger</code> interface provides methods for logging at four different levels depending on the severity of your message:</p>
+<ul>
+<li><code>debug()</code></li>
+<li><code>info()</code></li>
+<li><code>warn()</code></li>
+<li><code>error()</code></li>
+</ul>
+<p>Each method can receive a plain string or a formatted string. In formatted strings, each specifier is replaced with the corresponding argument. Supported specifiers are:</p>
+<ul>
+<li><code>%d</code> is a numeric representation of the parameter</li>
+<li><code>%j</code> is a JSON representation of the parameter</li>
+<li><code>%s</code> is a string representation of the parameter</li>
+</ul>
+<p>All log file entries have timestamps in the format <code>YYYY-MM-DD HH:mm:ss</code>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
