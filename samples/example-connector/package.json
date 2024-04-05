@@ -1,0 +1,45 @@
+{
+  "name": "@i2analyze/example-connector",
+  "version": "1.0.1",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@i2analyze/i2connect-scripts": "^2.1.0",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/node": "14.17.0",
+    "typescript": "^4.5.5"
+  },
+  "repository": {
+    "directory": "samples/example-connector",
+    "type": "git",
+    "url": "https://github.com/i2group/analyze-connect-node-sdk"
+  },
+  "bin": "bin/cli.js",
+  "files": [
+    "bin/*",
+    "dist/*",
+    "people.json",
+    "config/server.json"
+  ],
+  "dependencies": {
+    "@i2analyze/i2connect": "^2.3.0",
+    "@turf/boolean-point-in-polygon": "^6.5.0",
+    "jsonwebtoken": "^9.0.0",
+    "dotenv": "^10.0.0"
+  },
+  "scripts": {
+    "build": "i2connect-scripts build",
+    "serve": "node dist/index.js",
+    "start": "i2connect-scripts start",
+    "i2connect": "i2connect-scripts"
+  },
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "volta": {
+    "node": "14.17.0"
+  }
+}
