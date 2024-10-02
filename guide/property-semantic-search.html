@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Semantic seeded search </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Semantic seeded search ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="semantic-seeded-search">Semantic seeded search</h1>
+
+<p>The <a href="walkthrough/5-seeded-search.html">connector development walkthrough</a> describes how to create a service that accepts seed records to drive the searches that it performs. In that example, the records that the service accepts are constrained by their item types.</p>
+<p>Starting from version 4.4.1 of i2 Analyze, you can specify <em>semantic constraints</em> instead of item type constraints, so that:</p>
+<ul>
+<li><p>A service can accept seed records of any item type, provided that they have properties with particular semantic types (or descendants of those types).</p>
+</li>
+<li><p>Where a seed record has more than one property with the same (or a related) semantic type, you can base a search on the values of all such properties.</p>
+</li>
+</ul>
+<p>This topic demonstrates how to specify semantic constraints. For more information about the uses to which you can put seeded searches, see <a href="walkthrough/5-seeded-search.html">Seeded search</a>.</p>
+<h2 id="example">Example</h2>
+<p>For this example, you&#39;ll create a service that requires seed records that have values for properties with the &quot;Person First Name&quot; and &quot;Person Last Name&quot; semantic types. (Since the &quot;Maiden Name&quot; semantic type is a descendant of &quot;Person Last Name&quot;, the service will accept a seed with a value for a property with that type too.)</p>
+<p>The service examines each seed that it receives in the request, and returns a response containing records whose property values match the values in that seed.</p>
+<h3 id="adding-a-new-service">Adding a new service</h3>
+<p>You&#39;ll need to add the new service to the <code>index.ts</code> file that defines the connector. To support seeds with semantic property type constraints, you include a <code>semanticSeedConstraints</code> field in its configuration.</p>
+<p>The field defines the number of seed records that the seeded search can use, and - through <code>semanticPropertyTypeIds</code> - the identifiers of the semantic types of properties for which those seeds must have values.</p>
+<pre><code class="lang-typescript">const properties = {
+  PersonFirstName: &#39;guid4DE7370B-60E5-4EB0-860E-4066D3DFD7B6&#39;,
+  PersonLastName: &#39;guid62B01C18-2E64-46D5-B2FF-3C69B4F76FEB&#39;,
+};
+
+const sampleData = [
+  { firstName: &#39;Gene&#39;, lastName: &#39;Hendricks&#39;, id: &#39;123&#39; },
+  { firstName: &#39;Nick&#39;, lastName: &#39;Haley&#39;, id: &#39;456&#39; },
+  { firstName: &#39;Joe&#39;, lastName: &#39;Bloggs&#39;, id: &#39;789&#39; },
+];
+
+addService(
+  {
+    id: &#39;find-same-first-and-last-name&#39;,
+    name: &#39;Find Same First And Last Name&#39;,
+    description: &#39;A service that finds records with the same first and last name as the seed.&#39;,
+
+    semanticSeedConstraints: {
+      min: 1,
+      max: 5,
+
+      semanticPropertyTypeIds: {
+        recordsWithFirstLastName: [properties.PersonFirstName, properties.PersonLastName],
+      },
+    },
+  },
+  ({ result, semanticSeeds }) =&gt; {
+    // TODO: Implement the service
+  }
+);
+</code></pre><p><strong>Note</strong>: When you write your own services with semantic type constraints, you&#39;ll need to find the GUIDs of the semantic property types that you want to use. See <a href="https://i2group.github.io/analyze-connect/content/miscellaneous/semantic-type-identifiers.html">Semantic type identifiers</a> for more information.</p>
+<p>A real service would search an external data source for records that match the seed values. For demonstration purposes, this example uses <code>sampleData</code> in place of an external source.</p>
+<h3 id="implementing-the-service">Implementing the service</h3>
+<p>With the service defined, you can implement it to access the information in the seeds that it receives, and then to use that information to search for records in the source.</p>
+<p>In the following code, the outer <code>for</code> loop uses the <code>recordsWithFirstLastName</code> key from the service definition to get the property values from each seed record in turn.</p>
+<p><strong>Note:</strong> If the service specified other valid combinations of semantic property types, the seeds that matched those constraints would be available in a similar way.</p>
+<p>The second part of the loop filters <code>sampleData</code> according to whether the <code>firstName</code> and <code>lastName</code> properties in the data match any of the property values in the seed record that have the <code>PersonFirstName</code> and <code>PersonLastName</code> semantic types.</p>
+<p>On finding a match, the implementation creates a <code>Person</code> record and adds it to the result.</p>
+<pre><code class="lang-typescript">// Determines whether a substring occurs within a supplied string
+function caseInsensitiveContains(source: string, searchValue: string): boolean {
+  return source.toLowerCase().includes(searchValue.toLowerCase());
+}
+
+addService(
+  {
+    ...
+  },
+  ({ result, semanticSeeds }) =&gt; {
+    for (const semanticSeed of semanticSeeds.recordsWithFirstLastName) {
+      const firstNames = semanticSeed.getAsStrings(properties.PersonFirstName);
+      const lastNames = semanticSeed.getAsStrings(properties.PersonLastName);
+
+      if (firstNames &amp;&amp; lastNames) {
+        for (const fn of firstNames) {
+          for (const ln of lastNames) {
+
+            // Query third-party data source with property values
+            const people = sampleData.filter(
+              (p) =&gt; caseInsensitiveContains(p.firstName, fn) &amp;&amp;
+                     caseInsensitiveContains(p.lastName, ln)
+            );
+
+            for (const person of people) {
+              const resultEntity = result.addEntity(Person, person.id);
+              resultEntity.setProperties({
+                &#39;First Name&#39;: person.firstName,
+                &#39;Last Name&#39;: person.lastName,
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+);
+</code></pre><h2 id="reload-the-connector-configuration-in-i2-analyze">Reload the connector configuration in i2 Analyze</h2>
+<p>To make the new service available, you must reload the connector so that i2 Analyze picks up the configuration changes. Just like when you deployed the connector for the first time, you can use the Admin Console.</p>
+<ol>
+<li><p>Open a web browser and navigate to <a href="https://i2analyze.eia:9443/opal/admin#/connectors"><code>https://i2analyze.eia:9443/opal/admin#/connectors</code></a>.</p>
+</li>
+<li><p>If you are prompted to log in, enter <code>Jenny</code> and <code>Jenny</code> as the username and password.</p>
+</li>
+<li><p>Click the <strong>Reload gateway</strong> button.</p>
+</li>
+</ol>
+<h2 id="investigate-in-analysts-notebook">Investigate in Analyst&#39;s Notebook</h2>
+<p>Now you can see what happens when you use the connector from the Analyst&#39;s Notebook desktop client.</p>
+<ol>
+<li><p>Open Analyst&#39;s Notebook and log in when prompted.</p>
+</li>
+<li><p>Select a record on the chart that has a value for the &quot;First Name&quot; and a value for the &quot;Family Name&quot; or &quot;Maiden Name&quot; property (or for both).</p>
+</li>
+<li><p>Click the <strong>External Searches</strong> button in the ribbon. Find the query named <strong>Find Same First And Last Name</strong>.</p>
+</li>
+<li><p>Click <strong>Open</strong> to run the service.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Seeded search </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Seeded search ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="seeded-search">Seeded search</h1>
+
+<p>A seeded search passes information from an entity on the chart to a service, so that you can use that information to drive your searches. In order to pass entities as seeds, users select them in Analyst&#39;s Notebook before they use <strong>External Searches</strong>.</p>
+<p>If you have any issues during this task, remember to consult the
+<a href="../miscellaneous/troubleshoot.html">troubleshooting guide</a>.</p>
+<h2 id="configuration">Configuration</h2>
+<p>To explore seeded searches, you&#39;ll start by adding two new services to the connector.</p>
+<h3 id="add-new-services">Add new services</h3>
+<p>The two new entries in the <code>index.ts</code> file both use <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.services.iserviceconfig.html">the <code>seedConstraints</code> field</a>, which defines the type and number of seed entities that the seeded search can use:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;findSimilarComplaint&#39;,
+    name: &#39;NYPD Connector: Find like this complaint&#39;,
+    description: &#39;A service that finds a similar complaint.&#39;,
+    seedConstraints: { typeConstraints: [Complaint], min: 1, max: 1 },
+  },
+  () =&gt; {
+    // TODO: Implement the service
+  }
+);
+
+addService(
+  {
+    id: &#39;expand&#39;,
+    name: &#39;NYPD Connector: Expand&#39;,
+    description: &#39;A service that executes an expand operation on a seed.&#39;,
+    seedConstraints: { typeConstraints: [Complaint, Location], min: 1, max: 1 },
+  },
+  () =&gt; {
+    // TODO: Implement the service
+  }
+);
+</code></pre><h2 id="implementation">Implementation</h2>
+<p>With the services defined, you can implement them to run seeded searches on the NYPD data source. In both cases, you need to:</p>
+<ol>
+<li><p>Parse the seeds to the <code>acquire</code> part of the service.</p>
+</li>
+<li><p>Use the seeds to query the NYPD data source.</p>
+</li>
+<li><p>Filter the NYPD data source based on the seeds. How you use the seeds depends on what you are trying to achieve.</p>
+</li>
+</ol>
+<h3 id="find-like-this">&quot;Find like this&quot;</h3>
+<p>A &quot;find like this&quot; query looks at the property values of a selected record and searches for data in the source that has the same or similar property values.</p>
+<p>For this service, you need to find entities with property values that match some of the properties of the seed entity, which you access through <code>seeds.entities[0]</code>.</p>
+<p><strong>Important:</strong> Do not return the entity that was passed as the seed.</p>
+<pre><code class="lang-ts">const { Complaint, Location } = schema.entityTypes;
+
+addService(
+  {
+    id: &#39;findSimilarComplaint&#39;,
+    name: &#39;NYPD Connector: Find like this complaint&#39;,
+    description: &#39;A service that finds a similar complaint.&#39;,
+    seedConstraints: { typeConstraints: [Complaint], min: 1, max: 1 },
+  },
+  async ({ seeds, result }) =&gt; {
+    const seed = seeds.entities[0];
+    const levelOfOffence = (seed.isType(Complaint) &amp;&amp; seed.getProperty(&#39;Level Of Offence&#39;)) || &#39;&#39;;
+
+    const data = await requestData({
+      $limit: &#39;50&#39;,
+      $where: `law_cat_cd=&quot;${levelOfOffence}&quot;`,
+    });
+
+    for (const datum of data) {
+      addComplaint(datum, result);
+    }
+  }
+);
+</code></pre><h3 id="expand">&quot;Expand&quot;</h3>
+<p>An &quot;expand&quot; query takes an entity as a seed and returns a list of entities and links that are connected to that seed.</p>
+<p>For this service, you need to query the NYPD data source to find entities that are related to the seed entity, and then fabricate link records that represent those relationships. Every link record that you create must have the seed record at one of its ends.</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;expand&#39;,
+    name: &#39;NYPD Connector: Expand&#39;,
+    description: &#39;A service that executes an expand operation on a seed.&#39;,
+    seedConstraints: { typeConstraints: [Complaint, Location], min: 1, max: 1 },
+  },
+  async ({ seeds, result }) =&gt; {
+    const seed = seeds.entities[0];
+    const complaintNumber = (seed.isType(Complaint) &amp;&amp; seed.getProperty(&#39;Complaint Number&#39;)) || &#39;&#39;;
+    const boroughName = (seed.isType(Location) &amp;&amp; seed.getProperty(&#39;Borough Name&#39;)) || &#39;&#39;;
+    const precinctCode = (seed.isType(Location) &amp;&amp; seed.getProperty(&#39;Precinct Code&#39;)) || &#39;&#39;;
+
+    const query = seed.isType(Complaint)
+      ? { $where: `cmplnt_num=&quot;${complaintNumber}&quot;` }
+      : { $where: `boro_nm=&quot;${boroughName}&quot; AND addr_pct_cd=${precinctCode}` };
+
+    const data = await requestData({
+      $limit: &#39;50&#39;,
+      ...query,
+    });
+
+    const seedEntity = seed.isType(Complaint) ? result.addEntityFromSeed(seed) : result.addEntityFromSeed(seed);
+
+    for (const datum of data) {
+      const complaintEntity = seed.isType(Complaint) ? seedEntity : addComplaint(datum, result);
+      const locationEntity = seed.isType(Location) ? seedEntity : addLocation(datum, result);
+
+      const suspectEntity = addSuspect(datum, result);
+      const victimEntity = addVictim(datum, result);
+
+      addLink(Locatedat, datum.cmplnt_num, complaintEntity, locationEntity, result);
+      addLink(Victimof, datum.cmplnt_num, victimEntity, complaintEntity, result);
+      addLink(Suspectof, datum.cmplnt_num, suspectEntity, complaintEntity, result);
+    }
+  }
+);
+</code></pre><h2 id="reload-the-connector-configuration-in-i2-analyze">Reload the connector configuration in i2 Analyze</h2>
+<p>To make the new service available, you must reload the connector so that i2 Analyze picks up the configuration changes. Just like when you deployed the connector for the first time, you can use the Admin Console.</p>
+<ol>
+<li><p>Open a web browser and navigate to <a href="https://i2analyze.eia:9443/opal/admin#/connectors"><code>https://i2analyze.eia:9443/opal/admin#/connectors</code></a>.</p>
+</li>
+<li><p>If you are prompted to log in, enter <code>Jenny</code> and <code>Jenny</code> as the username and password.</p>
+</li>
+<li><p>Click the <strong>Reload gateway</strong> button.</p>
+</li>
+</ol>
+<h2 id="investigate-in-analysts-notebook">Investigate in Analyst&#39;s Notebook</h2>
+<p>Now you can see what happens when you use the connector from the Analyst&#39;s Notebook desktop client.</p>
+<ol>
+<li><p>Open Analyst&#39;s Notebook and log in when prompted.</p>
+</li>
+<li><p>Select an entity that you retrieved from the NYPD data source on the chart.</p>
+</li>
+<li><p>Click the <strong>External Searches</strong> button in the ribbon. Find the queries named <strong>NYPD Connector: Find like this complaint</strong> and <strong>NYPD Connector: Expand</strong>.</p>
+</li>
+<li><p>Click <strong>Open</strong> to run the services, which query the data source and return results.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>Next, you can combine what you&#39;ve learned from the last two topics to implement <a href="6-seeded-parameterized-search.html">seeded, parameterized searches</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Querying an external data source </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Querying an external data source ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="querying-an-external-data-source">Querying an external data source</h1>
+
+<p>In this part of the walkthrough, you will connect to the NYPD Complaint Dataset as your external data source, and marshal the data into entities, links, and properties so that you can return results that can be displayed in Analyst&#39;s Notebook.</p>
+<p>Again, use the <a href="../miscellaneous/troubleshoot.html">troubleshooting guide</a> if you need to.</p>
+<h2 id="create-an-app-token">Create an app token</h2>
+<p>To connect to the NYPD dataset, you need an app token that allows you to make unlimited requests (within reason) to Socrata&#39;s API. If you don&#39;t use an app token, the APIs will throttle by IP address.</p>
+<ol>
+<li><p><a href="https://data.cityofnewyork.us/profile/app_tokens">Visit this link</a> to sign in or create an account.</p>
+</li>
+<li><p>Click your name at the top right to access <strong>My Profile</strong>.</p>
+</li>
+<li><p>Click <strong>Edit Account Settings</strong>.</p>
+</li>
+<li><p>In the side pane, click <strong>Developer Settings</strong>.</p>
+</li>
+<li><p>At the bottom of the page, click <strong>Create New App Token</strong>. Specify your own &quot;Application Name&quot; and &quot;Description&quot;, and save.</p>
+</li>
+</ol>
+<p>If you leave the site, you can always retrieve the app token by logging into your account again.</p>
+<h2 id="access-the-data">Access the data</h2>
+<p>To start the process of accessing the data, create a file named <code>data-service.ts</code> alongside the <code>index.ts</code> file in the <code>src</code> folder. This new file will ultimately contain the code for making requests to the data source.</p>
+<h3 id="make-the-connector-configurable">Make the connector configurable</h3>
+<p>To be able to access and query the NYPD Complaint Dataset, you need to configure your connector with settings for both the URL and the app token.</p>
+<p>In <code>config/settings.json</code>, the <code>socrata_url</code>, as follows:</p>
+<pre><code class="lang-json">{
+  &quot;socrata_url&quot;: &quot;https://data.cityofnewyork.us/resource/7x9x-zpz6.json&quot;
+}
+</code></pre><p>Unlike the URL, the app token is a secret, and so you should access it from the environment. In this example, the environment variable will be named <code>ENV_SOCRATA_TOKEN</code>.</p>
+<p>Within the <code>config/settings.json</code> file we can add a setting named <code>token</code> and populate the value from the environment.</p>
+<p>We can also add a <code>.env</code> file at the root of the connector that will load the value into the Node.js environment when running the connector locally.</p>
+<p><strong>Important:</strong> The <code>.env</code> should not be checked in or distributed as it will contain your own secret API token.</p>
+<p>For example, the <code>config/settings.json</code> file:</p>
+<pre><code class="lang-json">{
+  &quot;socrata_url&quot;: &quot;https://data.cityofnewyork.us/resource/7x9x-zpz6.json&quot;,
+  &quot;token&quot;: &quot;${env.ENV_SOCRATA_TOKEN}&quot;
+}
+</code></pre><p>And the <code>.env</code> file:</p>
+<pre><code class="lang-txt">ENV_SOCRATA_TOKEN=&lt;YOUR TOKEN&gt;
+</code></pre><p>You can also add a <code>.env.sample</code> file to the connector root that contains information and examples for other developers and deployers. Always use dummy data in this file. For example:</p>
+<pre><code class="lang-txt"># The token required by the connector to access the data source.
+# To generate a token, navigate to https://data.cityofnewyork.us/profile/app_tokens
+# Then, from &quot;Developer Settings&quot; run &quot;Create New App Token&quot; and follow the on-screen instructions.
+ENV_SOCRATA_TOKEN=abc123
+</code></pre><p>Requests to the data source will require access to the configuration information. In <code>data-service.ts</code>, add an import to bring in the <code>settings</code> namespace from the <code>@i2analyze/i2connect</code> package and assign constants for the configuration values.</p>
+<pre><code class="lang-ts">import { settings } from &#39;@i2analyze/i2connect&#39;;
+
+const baseUrl = settings.getString(&#39;socrata_url&#39;, true);
+const token = settings.getString(&#39;token&#39;);
+</code></pre><p>See the topic in the Further Materials section for more information about <a href="../making-a-connector-configurable.html">making a connector configurable</a>.</p>
+<h3 id="model-the-data-returned-from-the-data-source">Model the data returned from the data source</h3>
+<p>Next, you&#39;re going to create a <a href="https://www.typescriptlang.org/docs/handbook/interfaces.html">TypeScript interface</a> that models an individual complaint from the NYPD dataset. Some data sources might already have type definitions that you could use to model the data returned, so it&#39;s worth checking before creating your own! Add the following interface to <code>data-service.ts</code>.</p>
+<pre><code class="lang-ts">export interface IComplaint {
+  /** Complaint number */
+  readonly cmplnt_num: string;
+  /** Crime status */
+  readonly crm_atpt_cptd_cd: string;
+  /** Jurisdiction code */
+  readonly jurisdiction_code: string;
+  /** Offense classification code */
+  readonly ky_cd: string;
+  /** Level of offense */
+  readonly law_cat_cd: string;
+  /** Offense description */
+  readonly ofns_desc: string;
+  /** Precinct code */
+  readonly addr_pct_cd: string;
+  /** Borough name */
+  readonly boro_nm: string;
+  /** Coordinates - latitude */
+  readonly latitude: string;
+  /** Coordinates - longitude */
+  readonly longitude: string;
+  /** Victim age group */
+  readonly vic_age_group: string;
+  /**  Victim race */
+  readonly vic_race: string;
+  /**  Victim sex */
+  readonly vic_sex: string;
+  /** Suspect age group */
+  readonly susp_age_group: string;
+  /** Suspect race */
+  readonly susp_race: string;
+  /** Suspect sex */
+  readonly susp_sex: string;
+}
+</code></pre><h3 id="create-a-function-to-query-the-data-source">Create a function to query the data source</h3>
+<p>To make an HTTP request from your connector, this example uses an npm package called <a href="https://www.npmjs.com/package/node-fetch">node-fetch</a> (alternatives are available). You need to add the <code>node-fetch</code> package along with the <code>@types/node-fetch</code> type definitions to your connector.</p>
+<p><strong>npm</strong></p>
+<pre><code class="lang-console">npm install node-fetch@2.6.7
+npm install -D @types/node-fetch@2.5.12
+</code></pre><p><strong>yarn</strong></p>
+<pre><code class="lang-console">yarn add node-fetch
+yarn add -D @types/node-fetch
+</code></pre><p>You must then import the installed packages, along with the <code>URL</code> class, at the top of <code>data-service.ts</code> with the following code:</p>
+<pre><code class="lang-ts">import fetch from &#39;node-fetch&#39;;
+import { URL } from &#39;url&#39;;
+</code></pre><p>In the same file, add a function called <code>requestData()</code> that the connector services can use to query the NYPD data source. The inputs to this function will be the query parameters that for constructing the URL for the query, along with the variables that you defined for the <code>token</code> and <code>baseUrl</code> earlier.</p>
+<pre><code class="lang-ts">/**
+ * Request some data from the NYPD dataset.
+ *
+ * @param queryParams - The request object that will be encoded into the query parameters. See https://dev.socrata.com/docs/queries/ for more details.
+ */
+export async function requestData(queryParams: Record&lt;string, string&gt;): Promise&lt;IComplaint[]&gt; {
+  const url = new URL(baseUrl);
+
+  for (const [key, value] of Object.entries(queryParams)) {
+    url.searchParams.append(key, value);
+  }
+
+  // Append the token value if it exists.
+  if (token) {
+    url.searchParams.append(&#39;$$app_token&#39;, token);
+  }
+
+  const response = await fetch(url.href);
+  if (response.status === 200) {
+    return (await response.json()) as IComplaint[];
+  } else {
+    throw new Error(response.statusText);
+  }
+}
+</code></pre><h2 id="adapting-the-data">Adapting the data</h2>
+<p>Currently, the <strong>NYPD Connector: Get all</strong> service creates a <code>Location</code> entity, a <code>Complaint</code> entity, and a <code>Locatedat</code> link, using the specified schema. Now, you&#39;ll update the service to query the NYPD data source and adapt the returned data to align with that schema.</p>
+<p>First, add the following imports to your <code>result-building.ts</code> file:</p>
+<pre><code class="lang-ts">import { IComplaint } from &#39;./data-service&#39;;
+
+import { nypdcomplaintdataschema as schema } from &#39;./schema/nypd-complaint-data-schema&#39;;
+
+const { Complaint, Location, Person } = schema.entityTypes;
+</code></pre><p>Then, add the functions to adapt the data from the source data model to your schema types.</p>
+<p>The code below demonstrates the addition of a Location entity, given a Complaint. As part of adapting the data, you have to:</p>
+<ul>
+<li><p>Convert the <code>addr_pct_cd</code> property from a string to an integer, which is ultimately a number primitive type in JavaScript. This can be done using the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt">parseInt</a> function.</p>
+</li>
+<li><p>Combine the <code>longitude</code> and <code>latitude</code> into a <a href="https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2">GeoJSON point</a> (assuming that the longitude and latitude are in the <a href="https://en.wikipedia.org/wiki/World_Geodetic_System">WGS84 spatial reference system</a>) to set the <code>Coordinates</code> property on the <code>Location</code> entity. In doing so, the <code>longitude</code> and <code>latitude</code> need to be parsed as floats using the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat">parseFloat</a> function.</p>
+</li>
+</ul>
+<p>Add the following to <code>result-building.ts</code>:</p>
+<pre><code class="lang-ts">export function addLocation(datum: IComplaint, result: services.IResult): records.IResultEntityRecord&lt;typeof Location&gt; {
+  const locationId = `Borough: ${datum.boro_nm} Precinct: ${datum.addr_pct_cd}`;
+  const entity = result.addEntity(Location, locationId);
+
+  entity.setProperties({
+    &#39;Precinct Code&#39;: parseInt(datum.addr_pct_cd, 10),
+    &#39;Borough Name&#39;: datum.boro_nm,
+    Coordinates: {
+      type: &#39;Point&#39;,
+      coordinates: [parseFloat(datum.longitude), parseFloat(datum.latitude)],
+    },
+  });
+
+  entity.setSourceReference(sourceReference);
+
+  return entity;
+}
+</code></pre><p>Next, add three similar functions for creating Complaint, Suspect, and Victim entities:</p>
+<pre><code class="lang-ts">export function addComplaint(
+  datum: IComplaint,
+  result: services.IResult
+): records.IResultEntityRecord&lt;typeof Complaint&gt; {
+  const complaintId = `Complaint: ${datum.cmplnt_num}`;
+  const entity = result.addEntity(Complaint, complaintId);
+
+  entity.setProperties({
+    &#39;Complaint Number&#39;: datum.cmplnt_num,
+    &#39;Crime Status&#39;: datum.crm_atpt_cptd_cd,
+    &#39;Jurisdiction Code&#39;: parseInt(datum.jurisdiction_code, 10),
+    &#39;Offence Classification Code&#39;: parseInt(datum.ky_cd, 10),
+    &#39;Level Of Offence&#39;: datum.law_cat_cd,
+    &#39;Offence Description&#39;: datum.ofns_desc,
+  });
+
+  entity.setSourceReference(sourceReference);
+
+  return entity;
+}
+
+export function addSuspect(datum: IComplaint, result: services.IResult): records.IResultEntityRecord&lt;typeof Person&gt; {
+  const suspectId = `Suspect: ${datum.cmplnt_num}`;
+  const entity = result.addEntity(Person, suspectId);
+
+  entity.setProperties({
+    &#39;Age Group&#39;: datum.susp_age_group,
+    Race: datum.susp_race,
+    Sex: datum.susp_sex,
+  });
+
+  entity.setSourceReference(sourceReference);
+
+  return entity;
+}
+
+export function addVictim(datum: IComplaint, result: services.IResult): records.IResultEntityRecord&lt;typeof Person&gt; {
+  const victimId = `Victim: ${datum.cmplnt_num}`;
+  const entity = result.addEntity(Person, victimId);
+
+  entity.setProperties({
+    &#39;Age Group&#39;: datum.vic_age_group,
+    Race: datum.vic_race,
+    Sex: datum.vic_sex,
+  });
+
+  entity.setSourceReference(sourceReference);
+
+  return entity;
+}
+</code></pre><h2 id="update-the-service-to-return-real-data">Update the service to return real data</h2>
+<p>Now you just need to wire everything together, so that your service returns the data that you retrieve from the NYPD data source.</p>
+<p>First, at the top of the <code>src/index.ts</code> file, add the following imports:</p>
+<pre><code class="lang-ts">import { addComplaint, addLocation, addSuspect, addVictim, addLink } from &#39;./result-building&#39;;
+import { requestData } from &#39;./data-service&#39;;
+</code></pre><p>Along with the schema link types:</p>
+<pre><code class="lang-ts">const { Locatedat, Suspectof, Victimof } = schema.linkTypes;
+</code></pre><p>In the service callback, you must first make a request to fetch data using <code>requestData</code>, and then loop through the complaints that you retrieve to build up the result set. For example, update the <strong>NYPD Connector: Get all</strong> service with the following:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;getAll&#39;,
+    name: &#39;NYPD Connector: Get all&#39;,
+    description: &#39;A service that retrieves all data.&#39;,
+  },
+  async ({ result }) =&gt; {
+    // The maximum number of rows returned from the NYPD complaint dataset
+    const data = await requestData({ $limit: &#39;100&#39; });
+
+    for (const datum of data) {
+      const locationEntity = addLocation(datum, result);
+      const complaintEntity = addComplaint(datum, result);
+      const suspectEntity = addSuspect(datum, result);
+      const victimEntity = addVictim(datum, result);
+
+      addLink(Locatedat, datum.cmplnt_num, complaintEntity, locationEntity, result);
+      addLink(Victimof, datum.cmplnt_num, victimEntity, complaintEntity, result);
+      addLink(Suspectof, datum.cmplnt_num, suspectEntity, complaintEntity, result);
+    }
+  }
+);
+</code></pre><p><strong>Note:</strong> You can query the data source using <em>SoQL</em> (Socrata Query Language), which supports a number of <a href="https://dev.socrata.com/docs/queries/">configuration parameters</a>. When executing <code>requestData</code>, set a <code>$limit</code> parameter to restrict the number of records retrieved. It&#39;s good to keep this value small to reduce the response time of each request until you are more comfortable with SoQL.</p>
+<h2 id="reload-the-connector-configuration-in-i2-analyze">Reload the connector configuration in i2 Analyze</h2>
+<p>To make the new service available, you must reload the connector so that i2 Analyze picks up the configuration changes. Just like when you deployed the connector for the first time, you can use the Admin Console.</p>
+<ol>
+<li><p>Open a web browser and navigate to <a href="https://i2analyze.eia:9443/opal/admin#/connectors"><code>https://i2analyze.eia:9443/opal/admin#/connectors</code></a>.</p>
+</li>
+<li><p>If you are prompted to log in, enter <code>Jenny</code> and <code>Jenny</code> as the username and password.</p>
+</li>
+<li><p>Click the <strong>Reload gateway</strong> button.</p>
+</li>
+</ol>
+<h2 id="investigate-in-analysts-notebook">Investigate in Analyst&#39;s Notebook</h2>
+<p>Now you can see what happens when you use the connector from the Analyst&#39;s Notebook desktop client.</p>
+<ol>
+<li><p>Open Analyst&#39;s Notebook and log in when prompted.</p>
+</li>
+<li><p>Click the <strong>External Searches</strong> button in the ribbon. Find the query named <strong>NYPD Connector: Get all</strong>.</p>
+</li>
+<li><p>Click <strong>Open</strong> to run the service, which now queries the data source and returns results.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>Next, you can <a href="4-parameterized-search.html">configure your own parameterized search</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

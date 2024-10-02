@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Data formats and values </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Data formats and values ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="data-formats-and-values">Data formats and values</h1>
+
+<p>This document describes how to format the data that you return from a connector or use in default values in the connector configuration. An example is given for each logical type.</p>
+<h2 id="singlelinestring">SINGLE_LINE_STRING</h2>
+<p>Single-line strings can be up to 250 bytes long, and can be further limited by the schema.</p>
+<pre><code>&quot;This is a single-line string.&quot;
+</code></pre><h2 id="multiplelinestring">MULTIPLE_LINE_STRING</h2>
+<p>Multiple-line strings can be up to 32K bytes long, and can be further limited by the schema.</p>
+<pre><code>&quot;This is a multiple-line string.&quot;
+</code></pre><h2 id="date">DATE</h2>
+<p>Date values must be in the ISO 8601 format &quot;YYYY-MM-DD&quot;. Also, values must be in the range from 1753-01-01 to 9999-12-30.</p>
+<pre><code>&quot;2021-11-30&quot;
+</code></pre><h2 id="time">TIME</h2>
+<p>Time values must be in the ISO 8601 format &quot;hh:mm:ss&quot;. Seconds are optional, but hours and minutes are not. Greater precision than seconds is not supported.</p>
+<pre><code>&quot;23:59:59&quot;
+</code></pre><h2 id="dateandtime">DATE_AND_TIME</h2>
+<p>Four pieces of information are required to specify a particular point in time:</p>
+<ul>
+<li>The date</li>
+<li>The time as it would appear on a clock</li>
+<li>The time zone in which the point in time is observed</li>
+<li>If the point in time occurs during the hour that is repeated when clocks are turned back to end Daylight Saving Time, whether to use the first or second occurrence of this time.</li>
+</ul>
+<p>There are two ways to return values with the <code>DATE_AND_TIME</code> logical type. You can use an ISO 8601 string <em>without</em> a time zone, or a date-and-time JSON object that explicitly defines the time zone.</p>
+<p>When you use the ISO 8601 format, the time zone is taken from the <code>timeZoneId</code> that&#39;s defined in <code>defaultValues</code> in the connector configuration. If no default is present, the time zone is set to UTC.</p>
+<pre><code>&quot;2021-12-30T23:59:59&quot;
+</code></pre><p>or</p>
+<pre><code>&quot;2021-12-30T23:59:59.999&quot;
+</code></pre><p>When you use a date-and-time JSON object, a <code>DATE_AND_TIME</code> value looks like this:</p>
+<pre><code>{
+  &quot;localDateAndTime&quot;: &quot;2021-12-30T23:59:59.999&quot;,
+  &quot;isDST&quot;: false,
+  &quot;timeZoneId&quot;: &quot;Europe/London&quot;
+}
+</code></pre><p>Here, <code>localDateAndTime</code> is a timestamp string that conforms to <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> as above; <code>timeZoneId</code> is an identifier from the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a> that specifies the time zone in which the moment of time was observed; and <code>isDST</code> specifies which occurence of the repeated hour to use - <code>true</code> for the first, <code>false</code> for the second.</p>
+<h2 id="boolean">BOOLEAN</h2>
+<p>Boolean values must be be either <code>true</code> or <code>false</code>.</p>
+<pre><code>true
+</code></pre><p>or</p>
+<pre><code>false
+</code></pre><h2 id="integer">INTEGER</h2>
+<p>Integer values must be in the range from -2147483648 to 2147483647.</p>
+<pre><code>2147483647
+</code></pre><h2 id="double">DOUBLE</h2>
+<p>Double values must be in the range from 4.94065645841246544e-324 to 1.79769313486231570e+308.</p>
+<pre><code>4.94065645841246544e-324
+</code></pre><h2 id="decimal">DECIMAL</h2>
+<p>Decimal values are represented as a string, can contain up to 18 digits before the decimal separator, and up to 4 digits after it. There can be a leading minus sign, but no exponent (e) notation.</p>
+<pre><code>&quot;-123456789012345678.1234&quot;
+</code></pre><h2 id="selectedfrom">SELECTED_FROM</h2>
+<p>Selected-from string values must match a permitted value that the schema or a form condition defines.</p>
+<pre><code>&quot;This is a selected-from string.&quot;
+</code></pre><h2 id="suggestedfrom">SUGGESTED_FROM</h2>
+<p>Suggested-from string values must match a permitted value that a form condition defines when you use them as default values, but are otherwise unrestricted.</p>
+<pre><code>&quot;This is a suggested-from string.&quot;
+</code></pre><h2 id="geospatial">GEOSPATIAL</h2>
+<p>Geospatial values must be formatted as GeoJSON points, as described at <a href="https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2">https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2</a>.</p>
+<p>The first element in the <code>coordinates</code> array is longitude, and must be a number between -180.0 and 180.0. The second element is latitude and must be a number between -90.0 and 90.0.</p>
+<pre><code>{
+  &quot;type&quot;: &quot;Point&quot;,
+  &quot;coordinates&quot;: [1.0, 2.0]
+}
+</code></pre><h2 id="geospatialarea">GEOSPATIAL_AREA</h2>
+<p><strong>Important:</strong> Values of type <code>GEOSPATIAL_AREA</code> are valid for use in connector configuration, but <em>not</em> in the data that you return from a connector.</p>
+<p>Geospatial area values must be formatted as GeoJSON feature collections, as described at <a href="https://datatracker.ietf.org/doc/html/rfc7946#section-3.3">https://datatracker.ietf.org/doc/html/rfc7946#section-3.3</a>. <a href="https://datatracker.ietf.org/doc/html/rfc7946#section-6.1">Foreign members</a> are allowed.</p>
+<p>The <code>geometry</code> must be of type <code>Polygon</code> or <code>MultiPolygon</code>, both of which must contain at least four coordinates, where the first coordinate matches the last.</p>
+<pre><code>{
+  &quot;type&quot;: &quot;FeatureCollection&quot;,
+  &quot;features&quot;: [
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;geometry&quot;: {
+        &quot;type&quot;: &quot;MultiPolygon&quot;,
+        &quot;coordinates&quot;: [
+          [
+            [
+              [1.0, 2.0],
+              [3.0, 4.0],
+              [5.0, 6.0],
+              [1.0, 2.0]
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;geometry&quot;: {
+        &quot;type&quot;: &quot;Polygon&quot;,
+        &quot;coordinates&quot;: [
+          [
+            [1.0, 2.0],
+            [3.0, 4.0],
+            [5.0, 6.0],
+            [1.0, 2.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

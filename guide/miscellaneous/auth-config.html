@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Authenticating service users </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Authenticating service users ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="authenticating-service-users">Authenticating service users</h1>
+
+<p>Some of the data sources that your services interact with can require users to authenticate themselves before they can run queries. You can arrange for a service to prompt a user for their credentials (such as a username and password) and then pass them on to the third-party source.</p>
+<p>You mark a service as requiring authentication by defining and supplying an <em>authenticator</em>, which is made up of two parts:</p>
+<ul>
+<li><p>A form, which is shown to the user whenever they need to authenticate. The form can consist of any number of labeled, text-based input fields that allow the user to enter either plain or masked text.</p>
+</li>
+<li><p>A callback function, which uses the form data to authenticate the user and returns a token that can be used to identify the user when running the service in the future.</p>
+</li>
+</ul>
+<p>To define an authenticator, you use the <code>createAuthenticator()</code> function, passing the form as the first parameter and the callback as the second. The example below defines a simple user authentication form consisting of username and password fields:</p>
+<pre><code class="lang-ts">const usernameAndPasswordAuthenticator = createAuthenticator(
+  {
+    id: &#39;authenticator1&#39;,
+    description: &#39;Enter your username and password&#39;,
+    form: {
+      username: { label: &#39;Username&#39;, type: &#39;text&#39; },
+      password: { label: &#39;Password&#39;, type: &#39;password&#39; },
+    },
+  },
+  ({ conditions }) =&gt; {
+    try {
+      // Get the token from the third-party authenticator, using the username and password
+      const token = await thirdPartyAuth(conditions.username, conditions.password);
+      return token;
+    } catch {
+      throw new DetailedError({ title: &#39;User not recognized&#39; });
+    }
+  }
+);
+</code></pre><p>The second parameter is the callback that authenticates the user: the <code>conditions</code> parameter contains the values that the user entered for each field. The callback checks the values and return the token that&#39;s passed to the service&#39;s <code>acquire()</code> and <code>validate()</code> callbacks. If authentication fails, it raises a <code>DetailedError</code> that can contain details about why it failed. (The <code>title</code> property is displayed directly to the user.)</p>
+<p>To mark a service as requiring authentication, you specify the authenticator as a property of the service configuration. The service is then passed the token that was returned by the authenticator (<code>authentication-token</code> in the example). If required, the service can verify that the token is still valid, and throw an <code>AuthenticationRequiredError</code> if it&#39;s not.</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;service1&#39;,
+    name: &#39;A service requiring user authentication&#39;,
+    description: &#39;A service requiring the user to authenticate themselves&#39;,
+    authenticator: usernameAndPasswordAuthenticator,
+  },
+  ({ authToken, result }) =&gt; {
+    // Check the authentication token is valid
+    if (authToken === &#39;authentication-token&#39;) {
+      // Continue with service acquire...
+    } else {
+      throw new AuthenticationRequiredError({ title: &#39;The authentication token is no longer valid&#39; });
+    }
+  }
+);
+</code></pre><h2 id="notes">Notes</h2>
+<ul>
+<li><p>A single authenticator can be used by more than one service. Each service will each be passed the same token that the authenticator returned.</p>
+</li>
+<li><p>The callback can be either synchronous or asynchronous, depending on how it performs the authentication. If it calls out to a third-party service, asynchronous operation is more likely.</p>
+</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

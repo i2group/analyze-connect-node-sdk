@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Upgrading to i2 Connect SDK 2.0 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Upgrading to i2 Connect SDK 2.0 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="upgrading-to-i2-connect-sdk-20">Upgrading to i2 Connect SDK 2.0</h1>
+
+<p>Starting with version 2.0, the i2 Connect SDK no longer supports the creation of connector servers that host multiple connectors. Defining a connector and its services no longer takes a class-based approach, which means that connector identifiers are not coupled to class names, and it becomes possible to register services dynamically.</p>
+<p>In version 2.0, decorators do not define service behaviors, which in most cases are now specified through service configuration. Service implementation now takes place in a callback, which means there is no longer any need to instantiate and return a <code>Result</code> class. Rather, the <code>result</code> is passed to the callback function to be populated.</p>
+<p>Another significant change is a new abstraction layer for accessing values of certain types in seeds and form conditions. For example, date values are now presented as objects with properties for day, month, and year, rather than as strings that require parsing to access those values.</p>
+<p>Version 2.0 also comes with a number of renames and API changes, along with a general restructure of namespaces that is not covered in detail in this document but is described in the <code>CHANGELOG.md</code> file.</p>
+<p>Finally, version 2.0 requires at least Node.js 14.17.0, and the included version of <a href="https://eslint.org/docs/8.0.0/user-guide/migrating-to-8.0.0">ESLint</a> is now 8.0.0. As a result, linting your code might reveal problems that were not previously reported.</p>
+<h2 id="upgrading-a-connector">Upgrading a connector</h2>
+<p>In explaining how to upgrade a connector that was written using version 1.x of the npm packages, this guide assumes that you are starting with a project that contains a single connector and a folder structure similar to this one:</p>
+<pre><code class="lang-console">├── src
+│   ├── index.ts
+│   └── connectors
+│       └── connectorA
+│           ├── connector.controller.ts
+│           └── ... &lt;other files used by connector code, such as the schema&gt;
+├── package.json
+└── ...
+</code></pre><p>The procedure for upgrading is as described in the following sections.</p>
+<h3 id="update-the-npm-packages">Update the npm packages</h3>
+<ol>
+<li>In the <code>package.json</code> file, update the <code>@i2analyze/i2connect-scripts</code> and the <code>@i2analyze/i2connect</code> packages to use the latest 2.x.x tag: <code>&quot;@i2analyze/i2connect-scripts&quot;: &quot;^2.0.0&quot;</code>.</li>
+<li>Install the packages using your chosen package manager. For example, if you are using npm, run <code>npm install</code>.</li>
+</ol>
+<h3 id="restructure-the-files">Restructure the files</h3>
+<ol>
+<li>Delete the <code>src/index.ts</code> file, which should only contain boilerplate code that starts the server - that is, <code>Server.start(__dirname);</code></li>
+<li>Move the contents of your connector (in the above example, that means everything inside the <code>connectorA</code> folder) to the top level <code>src</code> folder.</li>
+<li>Rename <code>connector.controller.ts</code> to <code>index.ts</code>.</li>
+</ol>
+<p>The end result should be a structure like this:</p>
+<pre><code class="lang-console">  ├── src
+  │ ├── index.ts (previously connector.controller.ts)
+  │ └── ... &lt;other files used by connector code, such as the schema&gt;
+  ├── package.json
+  └── ...
+</code></pre><h3 id="start-updating-the-code-to-use-the-new-api">Start updating the code to use the new API</h3>
+<p>If you run a build now (<code>npm run build</code>), you will see TypeScript compilation errors, and the connector will no longer run. The following list of changes is not exhaustive, but we also provide commented <a href="#example-1x-connector">before</a> and <a href="#example-2x-connector">after</a> examples for demonstration purposes.</p>
+<h4 id="migrate-from-the-decorator-based-api">Migrate from the decorator-based API</h4>
+<p>First, update the imports. Your IDE will probably highlight which ones are no longer exported from <code>@i2analyze/i2connect</code>, so remove those and add imports for the <code>addService</code> and <code>startConnector</code> functions.</p>
+<p>Start migrating the methods and parameters that previously used decorators. The following table explains how decorators can be migrated. It can be used in conjunction with the <a href="#example-1x-connector">before</a> and <a href="#example-2x-connector">after</a> examples.</p>
+<table>
+<thead>
+<tr>
+<th>Previous decorator usage</th>
+<th>New usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@connector(config) export class MyConnector { ... }</code></td>
+<td>This class decorator maps directly to the new <code>startConnector(config)</code> function. The <code>startConnector</code> function needs to be called after all services have been registered. You can also copy the class name to <code>id</code> within the <code>startConnector</code> config.</td>
+</tr>
+<tr>
+<td><code>@service(config) public serviceMethod() {...}</code></td>
+<td>This method decorator maps directly to the new <code>addService(config, acquireCallback)</code> function, where the body of the decorated method will move into the acquire callback.</td>
+</tr>
+<tr>
+<td><code>@asyncState() asyncState: IAsyncState</code></td>
+<td>The <code>longRunningState</code> is now accessed on the parameter object that&#39;s passed into the acquire callback when the service is long-running.</td>
+</tr>
+<tr>
+<td><code>@seeds(config) seeds: ISeeds</code></td>
+<td>The config for the seeds moves to the <code>seedConstraints</code> on the service config. The <code>seeds</code> are now accessed on the parameter object that&#39;s passed into the acquire callback on a service.</td>
+</tr>
+<tr>
+<td><code>@condition(config) paramName: T</code></td>
+<td>The config for the condition is moved into the <code>form</code> on the service config, where the <code>paramName</code> becomes the key.</td>
+</tr>
+<tr>
+<td><code>@authenticator(config) public authenticateMethod() {...}</code></td>
+<td>This method decorator maps directly to the new <code>createAuthenticator(config, authenticateCallback)</code>, where the body of the decorated method will move into the authenticate callback.</td>
+</tr>
+<tr>
+<td><code>@authenticationField(config) paramName: string</code></td>
+<td>This moves into the config for the <code>createAuthenticator</code> in the form of a key value on the <code>form</code>. This value can be accessed from the parameters object in the authenticate callback.</td>
+</tr>
+<tr>
+<td><code>@authenticationToken() authToken: string</code></td>
+<td>The <code>authToken</code> is now accessed on the parameter object passed into the acquire callback on a service, when a service is configured to use an <code>authenticator</code>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example-1x-connector">Example 1.x connector</h4>
+<pre><code class="lang-typescript">import {
+  connector,
+  authenticator,
+  authenticationField,
+  seeds,
+  ISeeds,
+  asyncState,
+  IAsyncState,
+  service,
+  Result,
+} from &#39;@i2analyze/i2connect&#39;;
+
+@connector({
+  schemas: { connector: connectorSchema },
+})
+export class FooConnector {
+  @authenticator({
+    description: &#39;Enter your username and password to enable data access.&#39;,
+  })
+  async authConfig(
+    @authenticationField({ label: &#39;Username&#39;, type: &#39;text&#39; }) username: string,
+    @authenticationField({ label: &#39;Password&#39;, type: &#39;password&#39; }) password: string
+  ) {
+    // ...
+    return &#39;access token&#39;;
+  }
+
+  @service({
+    name: &#39;Foo&#39;,
+    description: &#39;Foo description&#39;,
+    async: true,
+  })
+  public async fooService(
+    @seeds({
+      thisConnectorOnly: true,
+      typeConstraints: [Person, Address, Phone, Email],
+      min: 1,
+      max: 10,
+    })
+    seeds: ISeeds,
+    @asyncState() asyncState: IAsyncState,
+    @authenticationToken() authToken: string,
+    @condition({
+      logicalType: &#39;singleLineString&#39;,
+      label: &#39;Enter search term&#39;,
+    })
+    searchTerm: string | undefined
+  ) {
+    const result = new Result();
+
+    for (const seed of seeds.entities) {
+      const hasFirstNameIfPerson = seed.hasProperty(Person, &#39;First name&#39;);
+      const firstNameIfPerson = seed.hasProperty(Person, &#39;First name&#39;);
+      // ...
+    }
+
+    // ...
+    return result;
+  }
+}
+</code></pre><h4 id="example-2x-connector">Example 2.x connector</h4>
+<pre><code class="lang-typescript">import { createAuthenticator, addService, startConnector } from &#39;@i2analyze/i2connect&#39;;
+
+const authenticator = createAuthenticator(
+  {
+    description: &#39;Enter your username and password to enable data access.&#39;,
+    form: {
+      username: { label: &#39;Username&#39;, type: &#39;text&#39; },
+      password: { label: &#39;Password&#39;, type: &#39;password&#39; },
+    },
+  },
+  () =&gt; {
+    // ...
+    return &#39;access token&#39;;
+  }
+);
+
+addService(
+  {
+    id: &#39;fooService&#39;,
+    name: &#39;Foo&#39;,
+    description: &#39;Foo description&#39;,
+    longRunning: true, // Renamed from &quot;async&quot;
+    authenticator,
+    seedConstraints: {
+      thisConnectorOnly: true,
+      typeConstraints: [Person, Address, Phone, Email],
+      min: 1,
+      max: 10,
+    },
+    form: {
+      searchTerm: {
+        logicalType: &#39;singleLineString&#39;,
+        label: &#39;Enter search term&#39;,
+      },
+    },
+  },
+  ({
+    longRunningState,
+    authToken,
+    seeds,
+    conditions,
+    // The result is passed in via the callback and
+    // no longer needs to be instantiated and returned
+    result,
+  }) =&gt; {
+    const { searchTerm } = conditions;
+
+    for (const seed of seeds.entities) {
+      if (seed.isType(Person)) {
+        // The overloads for hasProperty and getProperty which accepted
+        // the item type as the first parameter have been removed
+        const hasFirstNameIfPerson = seed.hasProperty(&#39;First name&#39;);
+        const firstNameIfPerson = seed.getProperty(&#39;First name&#39;);
+      }
+      // ...
+    }
+
+    // ...
+  }
+);
+
+startConnector({
+  schemas: { connector: connectorSchema },
+});
+</code></pre><h3 id="default-behavior-changes">Default behavior changes</h3>
+<p>Some of the changes from version 1.x to version 2.x of the API are not syntactical, but affect the default behavior of your connectors.</p>
+<h4 id="result-id-persistence">Result ID persistence</h4>
+<p>The default behavior for connectors has changed so that they no longer assume result record identifiers to be persistent. If your connector does return persistent identifiers, you must set <code>hasPersistentResultIds</code> to <code>true</code> in the configuration for <code>startConnector</code>. The <a href="miscellaneous/result-ids.html">documentation</a> contains more information on this subject.</p>
+<h4 id="time-zones">Time zones</h4>
+<p>The <code>timeZoneId</code> now defaults to &quot;UTC&quot; instead of &quot;Europe/London&quot;. If your connector needs to use the previous value, it must to specify it in the configuration for <code>startConnector</code>.</p>
+<h3 id="json-configuration">JSON configuration</h3>
+<p>The contents of the JSON configuration file have changed. In particular, the connector identifier - which was previously the connector class name - now belongs in this file.</p>
+<ol>
+<li><p>Update the <code>$schema</code> URL to be <code>https://i2group.github.io/analyze-connect-node-sdk/schemas/config-schema-2.0.json</code>.</p>
+</li>
+<li><p>Remove the <code>ssl.ocspChecking</code> and <code>ssl.passphrase</code> fields. The passphrase must now be set through the <code>SSL_PASSPHRASE</code> environment variable.</p>
+</li>
+<li><p>Add a <code>connectorId</code> field to the top level of the configuration, and set it to the connector identifier (which was previously the connector class name).</p>
+</li>
+<li><p>Consider adding your connector-specific configuration to the JSON file too, which is <a href="making-a-connector-configurable.html">a supported option in v2</a>.</p>
+</li>
+</ol>
+<h4 id="example-1x-json-config-configdefaultjson">Example 1.x JSON config (<code>config/default.json</code>)</h4>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/analyze-connect-node-sdk/schemas/config-schema.json&quot;,
+  &quot;serverPort&quot;: 3000,
+  &quot;ssl&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;serverPort&quot;: 3443,
+    &quot;privateKeyFile&quot;: &quot;&quot;,
+    &quot;certificateFile&quot;: &quot;&quot;,
+    &quot;passphrase&quot;: &quot;&quot;,
+    &quot;gatewayCN&quot;: &quot;&quot;,
+    &quot;caCertificateFile&quot;: &quot;&quot;,
+    &quot;ocspChecking&quot;: {
+      &quot;enabled&quot;: false,
+      &quot;fallbackResponder&quot;: &quot;&quot;
+    }
+  },
+  &quot;log&quot;: {
+    &quot;level&quot;: &quot;info&quot;,
+    &quot;fileLogging&quot;: {
+      &quot;enabled&quot;: false,
+      &quot;dir&quot;: &quot;&quot;
+    }
+  }
+}
+</code></pre><h4 id="example-2x-json-config-configserverjson">Example 2.x JSON config (<code>config/server.json</code>)</h4>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/analyze-connect-node-sdk/schemas/config-schema-2.0.json&quot;,
+  &quot;serverPort&quot;: 3000,
+  &quot;connectorId&quot;: &quot;FooConnector&quot;,
+  &quot;ssl&quot;: {
+    &quot;enabled&quot;: false,
+    &quot;serverPort&quot;: 3443,
+    &quot;privateKeyFile&quot;: &quot;&quot;,
+    &quot;certificateFile&quot;: &quot;&quot;,
+    &quot;gatewayCN&quot;: &quot;&quot;,
+    &quot;caCertificateFile&quot;: &quot;&quot;
+  },
+  &quot;log&quot;: {
+    &quot;level&quot;: &quot;info&quot;,
+    &quot;fileLogging&quot;: {
+      &quot;enabled&quot;: false,
+      &quot;dir&quot;: &quot;&quot;
+    }
+  }
+}
+</code></pre><h2 id="deployment-updates">Deployment updates</h2>
+<p>The move to version 2.0 of the SDK also involves some changes to the procedure for deploying a connector.</p>
+<h3 id="config-url">Config URL</h3>
+<p>Because a connector server now supports only a single connector, the routing on the i2 Analyze server no longer involves the connector identifier. For example, the path <code>https://localhost:3443/ClassName/config</code> becomes <code>https://localhost:3443/config</code>. If you&#39;re using the deployment toolkit, then within <code>topology.xml</code> the setting <code>configuration-url=&quot;ClassName/config&quot;</code> becomes <code>configuration-url=&quot;/config&quot;</code>.</p>
+<h3 id="test-your-connector">Test your connector</h3>
+<p>Test your connector following migration to confirm that all of the services are behaving as expected!</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,229 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Validation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Validation ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="validation">Validation</h1>
+
+<p>In your service code, you can arrange for validation to take place on the client and at the gateway. Early validation improves the user&#39;s experience, and makes it more likely that client requests are in the correct form before you attempt to act on them.</p>
+<p>Consult the <a href="../miscellaneous/troubleshoot.html">troubleshooting guide</a> if you need it during this task.</p>
+<h2 id="client-side-validation">Client-side validation</h2>
+<p>Validation on the client can perform simple checks on input data, in the hope of avoiding faulty requests to a service. For example, you can ensure the presence of values for mandatory fields, or verify that input values are in the correct format.</p>
+<p>Client-side validation is configured through service settings, in the same way as parameterized searches.</p>
+<p>For example, you can instruct a service to validate that the input values for the <code>Offence</code> field start with two letters and two digits, as follows:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;searchTerm&#39;,
+    name: &#39;NYPD Connector: Search Term&#39;,
+    description: &#39;A service for conditional searches.&#39;,
+    form: {
+      offence: {
+        label: &#39;Offence&#39;,
+        logicalType: &#39;singleLineString&#39;,
+        isMandatory: true,
+        validation: {
+          regex: &#39;[A-Za-z]{2}\\d{2}&#39;,
+          message: &#39;Case number must start with two letters, then two digits&#39;,
+        },
+      },
+    },
+  },
+  () =&gt; {
+    // TODO: Implement acquire
+  }
+);
+</code></pre><p>The <code>isMandatory</code> field specifies whether a value is required, while the <code>validation</code> field allows regular expression validation to be performed, with custom error messages to be sent back to the client when a value does not comply with the rule.</p>
+<p>The documentation for the <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.services.icondition.html"><code>ICondition</code> type</a> contains more information about condition properties.</p>
+<h2 id="server-side-validation">Server-side validation</h2>
+<p>Validation on the server can handle more complex requirements. For example, your form might have three input fields that are individually optional, but at least one of them must be set. In your service code, you can check that the user has set at least one condition in the request.</p>
+<p>As another example, if you have two date fields and want to support searching a range of dates, you can validate that the start date is before the end date. In your service code, you can implement the validation logic using the optional <code>validate()</code> function on the service callback, as described in the documentation for <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.services.iservicecallbacks.html"><code>IServiceCallbacks</code></a>.</p>
+<p>If you find a problem, you can throw a <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.detailederror.html">DetailedError</a> from within <code>validate()</code>.</p>
+<p>The following is an illustration of the first example:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;findComplaintBy&#39;,
+    name: &#39;NYPD Connector: Search By&#39;,
+    description: &#39;A service for conditional searches.&#39;,
+    formIsMandatory: true,
+    form: {
+      sourceId: {
+        label: &#39;Source id&#39;,
+        logicalType: &#39;multipleLineString&#39;,
+        description: &#39;A service that has some validation&#39;,
+        isMandatory: false,
+      },
+      borough: {
+        label: &#39;Borough name&#39;,
+        logicalType: &#39;multipleLineString&#39;,
+        isMandatory: false,
+      },
+      lawCategory: {
+        label: &#39;Law category&#39;,
+        logicalType: &#39;multipleLineString&#39;,
+        isMandatory: false,
+      },
+    },
+  },
+  {
+    acquire: () =&gt; {
+      // TODO: Implement acquire
+    },
+    validate: ({ conditions: { borough, lawCategory, sourceId } }) =&gt; {
+      if (!borough &amp;&amp; !lawCategory &amp;&amp; !sourceId) {
+        throw new DetailedError({ title: &#39;One of the conditions must be set.&#39; });
+      }
+    },
+  }
+);
+</code></pre><p>In this code, the Boolean <code>formIsMandatory</code> property means that users must always open the form, even though it contains no individually mandatory conditions. The implementation of <code>validate()</code> then ensures that at least one of the conditions is set.</p>
+<p><strong>Note:</strong> To use <code>DetailedError</code>, you must update the import from <code>@i2analyze/i2connect</code> to include it, as follows:</p>
+<pre><code class="lang-ts">import { startConnector, addService, DetailedError } from &#39;@i2analyze/i2connect&#39;;
+</code></pre><h2 id="handling-errors">Handling errors</h2>
+<p>If your service code encounters problems despite your efforts to validate requests, you can also handle errors within the <code>acquire()</code> function itself.</p>
+<p>For example, even though errors are handled by service calls, you might want to display your own, more descriptive error message to the user.</p>
+<p>In another case, you might want to throw an error if you call a third party system and it fails. You can set up a <code>try-catch</code> structure around the service call, and throw a <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.detailederror.html"><code>DetailedError</code></a> if required.</p>
+<p>The following code shows how you can update the <strong>NYPD Connector: Get all</strong> service to throw a <code>DetailedError</code>:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;getAll&#39;,
+    name: &#39;NYPD Connector: Get all&#39;,
+    description: &#39;A service that retrieves all data.&#39;,
+  },
+  async ({ result }) =&gt; {
+    const brokenUrl = &#39;This is a broken URL&#39;;
+    let data: IComplaint[] = [];
+
+    try {
+      const response = await fetch(brokenUrl);
+      if (response.status === 200) {
+        data = (await response.json()) as IComplaint[];
+      }
+    } catch {
+      throw new DetailedError({ title: &#39;Failed to connect to the NYPD data source.&#39; });
+    }
+
+    for (const datum of data) {
+      const locationEntity = addLocation(datum, result);
+      const complaintEntity = addComplaint(datum, result);
+      const suspectEntity = addSuspect(datum, result);
+      const victimEntity = addVictim(datum, result);
+
+      addLink(Locatedat, datum.cmplnt_num, complaintEntity, locationEntity, result);
+      addLink(Victimof, datum.cmplnt_num, victimEntity, complaintEntity, result);
+      addLink(Suspectof, datum.cmplnt_num, suspectEntity, complaintEntity, result);
+    }
+  }
+);
+</code></pre><p><strong>Note:</strong> To run this code, you also need to update the imports in <code>index.ts</code>, as follows:</p>
+<pre><code class="lang-ts">import fetch from &#39;node-fetch&#39;;
+import { requestData, IComplaint } from &#39;./data-service&#39;;
+</code></pre><p>As a result of a <code>DetailedError</code>, the user sees the <code>title</code> or the <code>detail</code> if only one is present, or a composition in the form <code>${title}: ${detail}</code> when both are present.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>You&#39;re now ready to <a href="8-packaging-and-distribution.html">package and distribute</a> your connector.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

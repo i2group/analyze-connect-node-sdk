@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Visual Query </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Visual Query ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="visual-query">Visual Query</h1>
+
+<p>Analysts use Visual Query to search for records in the Information Store based on the values of specific properties, and on their relationships with other records. The records that they find depend on the structure of the queries that they create.</p>
+<p>Starting from version 4.4.2 of i2 Analyze, you can write Visual Query services for your connectors. Analysts can then interrogate an external source in the same way as they query the Information Store, using the familiar tools in the web client and the Analyst&#39;s Notebook desktop client.</p>
+<h2 id="example">Example</h2>
+<p>The Visual Queries that analysts create have two parts:</p>
+<ul>
+<li>The query structure, which indicates the types and relationships of the records they&#39;re interested in.</li>
+<li>The query conditions, which apply to the items in the structure and specify some of the values in the records they want to find.</li>
+</ul>
+<p>A Visual Query service that you create must examine the query structure that it receives in the request, and return a response containing records whose property values match the query conditions.</p>
+<p><strong>Note:</strong> In general, external data sources do not support the range of queries that are necessary for implementing unrestricted Visual Query operations across every record type they contain. When you write a Visual Query service, you can constrain the item types that analysts can use in their query structures, and the property types that they can use in query conditions.</p>
+<h3 id="adding-a-new-service">Adding a new service</h3>
+<p>Adding a Visual Query service to your connector means calling the <code>addVisualQueryService()</code> method from the <code>index.ts</code> file that defines it. In the first argument to the method, you provide the service configuration, which places limits on the Visual Queries that analysts can create.</p>
+<p>For example, you can use the <code>paletteItemTypes</code> field to say explicitly which item types appear (or do not appear) in the Visual Query structure editor:</p>
+<pre><code class="lang-typescript">addVisualQueryService(
+  {
+    name: &#39;Visual Query service with example restrictions&#39;,
+    id: &#39;visual-query-service-with-example-restrictions&#39;,
+    description:
+      &#39;A Visual Query service that does not allow query entities of type ET3 in query structures, and has operator usage rules and constraints&#39;,
+    config: {
+      paletteItemTypes: { mode: &#39;DENY&#39;, itemTypeIds: [&#39;ET3&#39;] },
+</code></pre><p>Alternatively (or additionally), you can use the <code>operatorUsageRules</code> field to allow or deny the use of conditions that involve particular property types, aspects, or operators. A rule can apply to a single item type or to all available item types:</p>
+<pre><code class="lang-typescript">      operatorUsageRules: [
+        // Deny the use of query conditions on all query items.
+        {
+          ruleType: &#39;DENY&#39;,
+        },
+
+        // Override the above. For query entities of type ET2
+        // only, specifically allow conditions that use the BETWEEN operator
+        // on YEAR aspects of property types EVE4 and EVE5.
+        {
+          ruleType: &#39;ALLOW&#39;,
+          itemTypeId: &#39;ET2&#39;,
+          propertyTypeIds: [&#39;EVE4&#39;, &#39;EVE5&#39;],
+          operators: [&#39;BETWEEN&#39;],
+          aspects: [&#39;YEAR&#39;],
+        },
+
+        // Override the above. For query entities of type ET1 only,
+        // specifically allow conditions that use the EQUAL_TO or STARTS_WITH
+        // operator on property type ADD5.
+        {
+          ruleType: &#39;ALLOW&#39;,
+          itemTypeId: &#39;ET1&#39;,
+          propertyTypeIds: [&#39;ADD5&#39;],
+          operators: [&#39;EQUAL_TO&#39;, &#39;STARTS_WITH&#39;],
+        },
+      ],
+</code></pre><p><strong>Note:</strong> The rules that you can define here are equivalent to the rules that administrators can create to govern the behavior of Visual Queries against the Information Store. For more information, see <a href="https://docs.i2group.com/analyze/vq_understanding.html">Visual Query condition restrictions</a>.</p>
+<p>Finally, you can use the <code>constraints</code> field to restrict other features of the query structures that analysts can create:</p>
+<pre><code class="lang-typescript">      constraints: {
+        // Can users specify which record types they want in results?
+        outputSelectionSupported: true,
+
+        // How many items in the query structure can have count conditions?
+        maximumCountConditions: 1,
+
+        // How many query links can appear in the query structure?
+        maximumQueryLinkCount: 100,
+
+        // How many query entities can have the &#39;Any&#39; type?
+        maximumAnyEntityTypeSupported: 1,
+
+        // How many query links can have the &#39;Any&#39; type?
+        maximumAnyLinkTypeSupported: 2,
+      },
+    },
+  },
+  async ({ visualQuery, result }) =&gt; {
+    // TODO: Implement the service
+  }
+);
+</code></pre><h3 id="implementing-the-service">Implementing the service</h3>
+<p>Taken as a whole, the Visual Query service configuration places limits on the contents of the <code>visualQuery</code> objects that your service receives.</p>
+<p>A real service would search an external data source for records that match or correspond to the contents of <code>visualQuery</code>, and then populate the <code>result</code> with the records that it finds.</p>
+<!-- TODO: Add an explanation and a link to the example Visual Query service when we have it. -->
+<p><strong>Note:</strong> Implementing a Visual Query service over an external source can be a complicated task, especially if the source isn&#39;t relational. i2 recommends engaging with its Services team to assist with the creation of Visual Query services.</p>
+<h2 id="reload-the-connector-configuration-in-i2-analyze">Reload the connector configuration in i2 Analyze</h2>
+<p>To make a new service available, you must reload the connector so that i2 Analyze picks up the configuration changes. Just like when you deployed the connector for the first time, you can use the Admin Console.</p>
+<ol>
+<li><p>Open a web browser and navigate to <a href="https://i2analyze.eia:9443/opal/admin#/connectors"><code>https://i2analyze.eia:9443/opal/admin#/connectors</code></a>.</p>
+</li>
+<li><p>If you are prompted to log in, enter <code>Jenny</code> and <code>Jenny</code> as the username and password.</p>
+</li>
+<li><p>Click the <strong>Reload gateway</strong> button.</p>
+</li>
+</ol>
+<h2 id="investigate-in-analysts-notebook">Investigate in Analyst&#39;s Notebook</h2>
+<p>After you reload the gateway, you can see what happens when you use the connector from the Analyst&#39;s Notebook desktop client.</p>
+<ol>
+<li><p>Open Analyst&#39;s Notebook and log in when prompted.</p>
+</li>
+<li><p>Click the <strong>External Searches</strong> button on the ribbon bar, and find the new Visual Query in the list.</p>
+</li>
+<li><p>Click <strong>Open</strong> to start designing a Visual Query.</p>
+</li>
+<li><p>Create the query structure, specify the query conditions, and then click <strong>Run</strong> to execute it.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
