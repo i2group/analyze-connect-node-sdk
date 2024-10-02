@@ -1,0 +1,4 @@
+{
+  "socrata_url": "https://data.cityofnewyork.us/resource/7x9x-zpz6.json",
+  "token": "${env.ENV_SOCRATA_TOKEN}"
+}
