@@ -1,0 +1,13 @@
+# This file determines paths which should NOT
+# be included in the output of `npm pack` or `npm publish`.
+
+.eslintrc.js
+.prettierrc
+tsconfig.json
+.vscode/
+src/
+CONTRIBUTING.md
+
+*.tgz
+.env
+.env.test
