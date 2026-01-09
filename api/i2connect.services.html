@@ -1,0 +1,370 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>services namespace </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="services namespace ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="i2connect.html">@i2analyze/i2connect</a> &gt; <a href="i2connect.services.html">services</a></p>
+<h2 id="services-namespace">services namespace</h2>
+<p>The members of the <code>services</code> namespace allow you to configure and implement the services in a connector.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">export declare namespace services 
+</code></pre><p><b>Introduced:</b>
+API version 1.0</p>
+<h2 id="interfaces">Interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.services.iauthenticationfield.html">IAuthenticationField</a></td>
+<td>A field on an authentication dialog.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iauthenticator.html">IAuthenticator</a></td>
+<td>An authenticator, which provides a service with user authentication functionality.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iauthenticatorconfig.html">IAuthenticatorConfig</a></td>
+<td>A collection of properties that provide configuration for an authenticator.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iauthenticatorserviceconfig.html">IAuthenticatorServiceConfig</a></td>
+<td>A collection of properties that define whether a service requires user authentication, and how it behaves if so.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.ibooleancondition.html">IBooleanCondition</a></td>
+<td>A condition that prompts the user for a Boolean value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.icharlimit.html">ICharLimit</a></td>
+<td>A constraint on the length of a string value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iconditionbase.html">IConditionBase</a></td>
+<td>A set of information that is common to all service conditions.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.icoreserviceconfig.html">ICoreServiceConfig</a></td>
+<td>A collection of properties that provide the name and configuration for a service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.idateandtimecondition.html">IDateAndTimeCondition</a></td>
+<td>A condition that prompts the user for a date-and-time value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.idatecondition.html">IDateCondition</a></td>
+<td>A condition that prompts the user for a date value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.idecimalcondition.html">IDecimalCondition</a></td>
+<td>A condition that prompts the user for a decimal value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iformsection.html">IFormSection</a></td>
+<td>A section of a form for an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iformserviceconfig.html">IFormServiceConfig</a></td>
+<td>A collection of properties that define whether a service requires user input, and how that input looks.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.igeospatialareacondition.html">IGeospatialAreaCondition</a></td>
+<td>A condition that prompts the user for a geospatial area value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.igeospatialcondition.html">IGeospatialCondition</a></td>
+<td>A condition that prompts the user for a geospatial value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iitemtypeconstraint.html">IItemTypeConstraint</a></td>
+<td>A set of constraints that apply to seeds that have a particular item type.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.ilongrunningserviceconfig.html">ILongRunningServiceConfig</a></td>
+<td>A collection of properties that define whether a service involves a long-running operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.ilongrunningstate.html">ILongRunningState</a></td>
+<td>A collection of methods through which an i2 Connect service can communicate with a user who initiated a long-running operation.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.imultilinestringcondition.html">IMultiLineStringCondition</a></td>
+<td>A condition that prompts the user for a multiple-line string value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.inumbercondition.html">INumberCondition</a></td>
+<td>A condition that prompts the user for a numeric value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.irequestinformation.html">IRequestInformation</a></td>
+<td>A set of information from an incoming HTTP request.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.irequirespossiblevalues.html">IRequiresPossibleValues</a></td>
+<td>A type that indicates that a string condition can present a list of possible values.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iresult.html">IResult</a></td>
+<td>A result from a service method on a connector for the i2 Connect server.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isecuritypermission.html">ISecurityPermission</a></td>
+<td>A set of access levels associated with the values of a particular security dimension.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iseedconstraints.html">ISeedConstraints</a></td>
+<td>A set of constraints on the records that can be passed as seeds to a service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iseededserviceconfig.html">ISeededServiceConfig</a></td>
+<td>A collection of properties that provide the name and configuration for a service that might have item type seed constraints.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iseeds.html">ISeeds</a></td>
+<td>A set of seed records that the i2 Connect server passes to a service method.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iseedserviceconfig.html">ISeedServiceConfig</a></td>
+<td>A collection of properties that define whether a service supports seeds, and the constraints on them.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iselectedfromcondition.html">ISelectedFromCondition</a></td>
+<td>A condition that prompts the user to select a value from a list.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isemanticseed.html">ISemanticSeed</a></td>
+<td>A semantic seed for a search operation, which contains the seed record and the semantic property values.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isemanticseedconstraints.html">ISemanticSeedConstraints</a></td>
+<td>A set of semantic property type constraints on the records that can be passed as seeds to a service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isemanticseededserviceconfig.html">ISemanticSeededServiceConfig</a></td>
+<td>A collection of properties that provide the name and configuration for a service that has semantic property type seed constraints.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isemanticseedserviceconfig.html">ISemanticSeedServiceConfig</a></td>
+<td>A collection of properties that define whether a service supports seeds with semantic property type constraints.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iservicecallbacks.html">IServiceCallbacks</a></td>
+<td>A set of methods that the server calls when it uses a service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isinglelinestringcondition.html">ISingleLineStringCondition</a></td>
+<td>A condition that prompts the user for a single-line string value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.istringvalidator.html">IStringValidator</a></td>
+<td>A constraint on the contents of a string value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isubstatus.html">ISubstatus</a></td>
+<td>A piece of information about the progress of a long-running service method call.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isuggestedfromcondition.html">ISuggestedFromCondition</a></td>
+<td>A condition that prompts the user to provide a value or select one from a list.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isupportsmaxlength.html">ISupportsMaxLength</a></td>
+<td>A type that indicates that a string condition can impose a length constraint on values.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.isupportsstringvalidation.html">ISupportsStringValidation</a></td>
+<td>A type that indicates that a string condition can impose a validation constraint on values.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.itimecondition.html">ITimeCondition</a></td>
+<td>A condition that prompts the user for a time value.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.ivisualqueryservicecallbacks.html">IVisualQueryServiceCallbacks</a></td>
+<td>A set of methods that the server calls when it uses a visual query service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.ivisualqueryserviceconfig.html">IVisualQueryServiceConfig</a></td>
+<td>A collection of properties that provide the name and configuration for a visual query service.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="type-aliases">Type Aliases</h2>
+<table>
+<thead>
+<tr>
+<th>Type Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="i2connect.services.accesslevel.html">AccessLevel</a></td>
+<td>The level of access that a user has to some data.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.authenticationfieldtype.html">AuthenticationFieldType</a></td>
+<td>A type for an authentication field, which can be <code>&#39;text&#39;</code> or <code>&#39;password&#39;</code>.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.authform.html">AuthForm</a></td>
+<td>An authentication form.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.basicform.html">BasicForm</a></td>
+<td>A basic form for an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.charlimitunits.html">CharLimitUnits</a></td>
+<td>The units to use in constraints on the length of string values.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.hidepredicate.html">HidePredicate</a></td>
+<td>A function that determines whether a service or condition should be hidden, based on the contents of an <a href="i2connect.services.irequestinformation.html">services.IRequestInformation</a> object that it receives.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.icondition.html">ICondition</a></td>
+<td>A condition for a service on an i2 Connect connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iserviceconfig.html">IServiceConfig</a></td>
+<td>A collection of properties that provide the name and configuration for a service that might have item type seed constraints.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.iserviceconfigtype.html">IServiceConfigType</a></td>
+<td>The configuration information for a service on an i2 Connect connector.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.requestspecificvalue.html">RequestSpecificValue</a></td>
+<td>A function that returns a value of type <code>T</code> based on the contents of an <a href="i2connect.services.irequestinformation.html">services.IRequestInformation</a> object that it receives.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.sectionedform.html">SectionedForm</a></td>
+<td>A form with sections for an i2 Connect service.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.semanticpropertytypeids.html">SemanticPropertyTypeIds</a></td>
+<td>Sets of semantic property type identifiers, keyed by strings that identify each set.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.semanticseeds.html">SemanticSeeds</a></td>
+<td>A set of semantic seeds, keyed by the string identifiers of the constraints that they passed.</td>
+</tr>
+<tr>
+<td><a href="i2connect.services.substatustype.html">SubstatusType</a></td>
+<td>A type for a piece of substatus information.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

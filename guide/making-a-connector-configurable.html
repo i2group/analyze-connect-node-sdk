@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Making a connector configurable </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Making a connector configurable ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="making-a-connector-configurable">Making a connector configurable</h1>
+
+<p>Depending on the nature of a connector, it might be necessary to allow administrators to configure some aspects of its behavior at the point of deployment. This configuration might include settings such as:</p>
+<ul>
+<li>URLs, credentials, and other information for connecting to third-party services.</li>
+<li>Controls over the behavior of a service, such as what data the service returns.</li>
+</ul>
+<p>As you develop your connectors, consider what configuration settings you might include to make them as flexible as possible for their deployers. Connectors can receive settings in a number of ways:</p>
+<ul>
+<li>From a configuration file only</li>
+<li>From an environment variable only</li>
+<li>From a configuration file with optional environment variable override</li>
+</ul>
+<p>Connectors built with the i2 Connect Node SDK support configuration settings with any of the following types:</p>
+<ul>
+<li>string</li>
+<li>number</li>
+<li>Boolean</li>
+<li>string array</li>
+<li>object</li>
+</ul>
+<p><strong>Note</strong>: Any array- or object-based settings that you supply through environment variables must be specified as JSON strings. For example:</p>
+<ul>
+<li><code>[&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]</code></li>
+<li><code>{&quot;prop 1&quot;:&quot;prop value 1&quot;, &quot;prop 2&quot;:123, &quot;prop 3&quot;:true}</code></li>
+</ul>
+<h2 id="providing-settings-in-a-configuration-file">Providing settings in a configuration file</h2>
+<p>To use file-based configuration settings, add them to the <code>config/settings.json</code> file. The following example contains the definition of a setting named <code>url</code>:</p>
+<pre><code class="lang-json">{
+  &quot;url&quot;: &quot;https://example.com&quot;
+}
+</code></pre><p>If required, you can define settings in hierarchical sections to organize them. For example:</p>
+<pre><code class="lang-json">{
+  &quot;url&quot;: &quot;https://example.com&quot;,
+  &quot;query&quot;: {
+    &quot;timeout in seconds&quot;: 20,
+    &quot;allow wildcard searches&quot;: true,
+    &quot;document file search extensions&quot;: [&quot;.doc&quot;, &quot;.txt&quot;, &quot;.html&quot;]
+  }
+}
+</code></pre><h2 id="accessing-configuration-settings-from-service-code">Accessing configuration settings from service code</h2>
+<p>Configuration settings are only useful if you can access them from within your service! The i2 Connect API provides functionality for doing so in the <code>settings</code> namespace (just import <code>settings</code> from <code>@i2analyze/i2connect</code>). Each function in the namespace can access settings of different types, and is named accordingly.</p>
+<p>For example, to read a file-based string value named <code>url</code>:</p>
+<pre><code class="lang-ts">import { settings } from &#39;@i2analyze/i2connect&#39;;
+
+const url = settings.getString(&#39;url&#39;);
+</code></pre><p>You can indicate that a configuration setting must be present by specifying the <code>isRequired</code> parameter when you attempt to fetch its value. For example:</p>
+<pre><code class="lang-ts">import { settings } from &#39;@i2analyze/i2connect&#39;;
+
+const url = settings.getString(&#39;url&#39;, true);
+</code></pre><p>The call to <code>settings.getString()</code> then throws an error if the setting is not found.</p>
+<h2 id="environment-variable-substitution">Environment variable substitution</h2>
+<p>The settings file also supports environment variable string substitution using the syntax <code>${env.ENV_VAR}</code>, where <code>env</code> represents the <a href="https://nodejs.org/api/process.html#processenv">Node.js environment</a>.</p>
+<p>The SDK uses <a href="https://www.npmjs.com/package/dotenv">dotenv</a> to enable loading an environment into the Node.js process from a <code>.env</code> file in the root directory of the connector. Environment variables defined outside the <code>.env</code> file take precedence over the variables defined in the file.</p>
+<p><strong>Important:</strong> The <code>.env</code> file should not be distributed or checked into source control.</p>
+<p>For example, given the following configuration files:</p>
+<ul>
+<li><p><code>my-connector/config/settings.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;apiKey&quot;: &quot;${env.EXAMPLE_API_KEY}&quot;,
+  &quot;apiUrl&quot;: &quot;https://${env.EXAMPLE_HOST}.com/${env.EXAMPLE_PATH}&quot;
+}
+</code></pre></li>
+<li><p><code>my-connector/.env</code>:</p>
+<pre><code>EXAMPLE_API_KEY=abc123
+EXAMPLE_HOST=foo
+EXAMPLE_PATH=bar
+</code></pre></li>
+</ul>
+<p>You can access the settings like this:</p>
+<ul>
+<li><p><code>my-connector/src/index.ts</code>:</p>
+<pre><code class="lang-typescript">const apiKey = settings.getString(&#39;apiKey&#39;);
+// &quot;abc123&quot;
+
+const apiUrl = settings.getString(&#39;apiUrl&#39;);
+// &quot;https://foo.com/bar&quot;
+</code></pre></li>
+</ul>
+<h2 id="handling-sensitive-information">Handling sensitive information</h2>
+<p>Many connectors need to handle sensitive information that could pose a security risk if it were compromised, such as API keys or passwords. To safeguard such information, keep these settings outside the source code or any other files that are distributed with your connector.</p>
+<p>When you use <code>@i2analyze/create-connector</code> to bootstrap a connector project, it is automatically configured so that both git and npm ignore any <code>.env</code> file that you create.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

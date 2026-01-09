@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Source references </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Source references ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="source-references">Source references</h1>
+
+<p>In the records that you return to users from your services, you can include <a href="https://docs.i2group.com/analyze/implementing_source_references.html"><em>source references</em></a> that contain information about the external source from which the data came. Entity and link records both support the inclusion of <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.records.isourcereference.html">source reference objects</a>.</p>
+<h2 id="setting-a-source-reference">Setting a source reference</h2>
+<p>To add a source reference to an entity or link, call the <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.records.irecordproperties.setsourcereference.html"><code>setSourceReference()</code></a> function from within the service&#39;s <code>acquire</code> callback.</p>
+<p>For example, see the calls to <code>complaintEntity.setSourceReference()</code> and <code>victimOfLink.setSourceReference()</code> in the following code:</p>
+<pre><code class="lang-ts">const exampleSourceRef = {
+  name: &#39;NYPD Complaint Dataset&#39;,
+  type: &#39;Open source data&#39;,
+  description: &#39;A collection of open source data about NYPD complaints&#39;,
+};
+
+addService(
+  {
+    id: &#39;getVictims&#39;,
+    name: &#39;NYPD Connector: Get all victims&#39;,
+    description: &#39;A service that retrieves all the victim data.&#39;,
+  },
+  ({ result }) =&gt; {
+    const complaintId = `Complaint: 1`;
+    const complaintEntity = result.addEntity(Complaint, complaintId);
+    complaintEntity.setSourceReference(exampleSourceRef);
+
+    const victimId = `Victim: 1`;
+    const victimEntity = result.addEntity(Person, victimId);
+    victimEntity.setSourceReference(exampleSourceRef);
+
+    const victimOfLinkId = `VictimOf: 1`;
+    const victimOfLink = result.addLink(Victimof, victimOfLinkId, victimEntity, complaintEntity);
+    victimOfLink.setSourceReference(exampleSourceRef);
+  }
+);
+</code></pre><h2 id="static-file-serving">Static file serving</h2>
+<p>The i2 Connect SDK supports serving static files locally from your connector, which is useful for including images, documents, or other resources with your entity and link records. This feature allows connectors to store files locally and reference them in source references.</p>
+<h3 id="setting-up-static-file-serving">Setting up static file serving</h3>
+<p>Before using static file serving, you need to configure your environment and register storage in your connector.</p>
+<h4 id="1-configure-storage-location">1. Configure storage location</h4>
+<p>Set the root location where files will be stored:</p>
+<p>A. <strong>ADT deployment</strong></p>
+<p>If using ADT to deploy your connectors then you have 2 options:</p>
+<p><strong>Note</strong>: You can only use 1 of these options, they can&#39;t be used together.</p>
+<ol>
+<li>Set the environment variable <code>CONNECTOR_STORAGE_DIRECTORY</code> to some path on your system e.g <code>/home/user1/storage</code>.
+The storage will be mapped to a subdirectory of this path using the connector ID for the specific connectors being brought up e.g</li>
+</ol>
+<pre><code>For connectors with ID&#39;s of connector1 and connector2, the path for each will end up:
+
+-&gt; /home/user1/storage/connector1
+-&gt; /home/user1/storage/connector2
+</code></pre><p>We will then pass these paths into the respective connectors under the environment variable <code>CONNECTOR_STORAGE_ROOT_LOCATION</code>, so you don&#39;t need to set this manually for deployment with ADT.</p>
+<ol>
+<li>Set the environment variable <code>CONNECTOR_STORAGE_VOLUME</code> which will create a docker volume containing a subdirectory using the <code>connectorId</code> per connector.
+Much the same as the above step, the paths to the connectors will be passed through to the respective connectors via <code>CONNECTOR_STORAGE_ROOT_LOCATION</code> automatically.</li>
+</ol>
+<p>Refer to the <a href="https://i2group.github.io/analyze-deployment-tooling/content/connector_config_dev.html#connectors-persisting-data">Official ADT documentation</a> that also mentions the above.</p>
+<p>B. <strong>Local deployment</strong></p>
+<p>For this you&#39;ll have to get the environment variable to apply specifically to the connector you want this to apply to.</p>
+<pre><code>export CONNECTOR_STORAGE_ROOT_LOCATION=&#39;/home/user1/storage/connector1&#39;
+</code></pre><p><strong>Note:</strong> Use an absolute path for the storage location.</p>
+<h4 id="2-register-storage-in-your-connector">2. Register storage in your connector</h4>
+<p>Import and call the <code>registerStorage()</code> function at the top level of your connector:</p>
+<pre><code class="lang-ts">import { registerStorage } from &#39;@i2analyze/i2connect&#39;;
+
+const storage = registerStorage();
+</code></pre><h4 id="3-optional-add-authentication">3. Optional: Add authentication</h4>
+<p>You can configure additional authentication for file access by providing an auth handler. The auth handler receives the <code>fileId</code>, the identifier of the file being accessed, and <code>requestInformation</code>, the information about the user who made the request.</p>
+<pre><code class="lang-ts">const storage = registerStorage({
+  authHandler: (fileId, requestInformation) =&gt; {
+    // Access the fileId and user information
+    const userCanAccessFile1 = requestInformation.i2AnalyzeUserCacPermissions.includes(&#39;example-permission&#39;);
+    if (fileId === &#39;file1&#39; &amp;&amp; !userCanAccessFile1) {
+      // If the user is not authorized, throw an error
+      throw new Error(&#39;User does not have permission to access this file&#39;);
+    }
+  },
+});
+</code></pre><p>If authentication fails, throw an error with a descriptive message. The server will return a 403 response with your error message.</p>
+<h3 id="writing-files-to-storage">Writing files to storage</h3>
+<p>Use the <code>writeFile()</code> function to store files locally:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;getAll&#39;,
+    name: &#39;NYPD Connector: Get all&#39;,
+    description: &#39;A service that retrieves all data.&#39;,
+  },
+  async ({ result }) =&gt; {
+    // Store a file
+    await storage.writeFile({ fileId: &#39;file1&#39;, fileContent: &#39;This is a test file.&#39; });
+  }
+);
+</code></pre><p>Files are stored at <code>${CONNECTOR_STORAGE_ROOT_LOCATION}/${fileId}</code>, for example <code>/home/user1/storage/example-connector/report-image-123.png</code>.</p>
+<p><strong>Note:</strong> File extensions in the <code>fileId</code> affect browser behavior when users access the files. If the <code>fileId</code> includes a recognized extension (e.g., <code>.png</code>, <code>.pdf</code>, <code>.jpg</code>), browsers will handle the file according to that type. Files without extensions may be downloaded rather than displayed inline, even if they contain image data.</p>
+<h3 id="setting-static-source-references">Setting static source references</h3>
+<p>Use <code>setStaticSourceReference()</code> to reference locally stored files in your entities and links:</p>
+<pre><code class="lang-ts">// For images
+entity.setStaticSourceReference({
+  fileId: &#39;image123.png&#39;,
+  name: &#39;Evidence Photo&#39;,
+  fileType: &#39;image&#39;,
+  description: &#39;Photo taken at crime scene&#39;,
+});
+
+// For documents
+entity.setStaticSourceReference({
+  fileId: &#39;document456.pdf&#39;,
+  name: &#39;Police Report&#39;,
+  fileType: &#39;file&#39;,
+  description: &#39;Official incident report&#39;,
+});
+</code></pre><p><strong>Note:</strong> The <code>fileId</code> must match the fileId used when writing the file to storage.</p>
+<p><strong>Note:</strong> The <code>fileType</code> helps determine which property is set on the <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.records.isourcereference.html">source reference</a>. <code>image</code> sets the <code>imageUrl</code> field and <code>file</code> sets the <code>location</code> field on the underlying <code>setSourceReference()</code> function.</p>
+<h3 id="configuring-the-base-uri-for-a-connector">Configuring the base URI for a connector</h3>
+<p>When using <code>setStaticSourceReference</code> we construct a URI that points to the resource in question for a connector. We attempt to fetch this value from request headers. However, connectors can be configured on systems with custom proxies, which can map the URI to what they need, we may not be aware of what decisions have been made. This could potentially result in an incorrect resource reference. To resolve this we have introduced some overrides in case a situation like this occurs.</p>
+<h4 id="adt-deployment">ADT deployment</h4>
+<p>You can set the environment variable <code>CONNECTORS_BASE_URI</code> to something like <code>https://test.eia:3000/connectors</code>. ADT is a more controlled environment so this will automatically append the configured proxy path (<code>&#39;example-connector/api&#39;</code> in the above example) and pass an environment variable of <code>FRONT_END_URI</code> to the connectors. This will prevent all header detection and use this path to construct the resourcePath.</p>
+<h4 id="non-adt-deployment">Non ADT deployment</h4>
+<p>Set the environment variable <code>FRONT_END_URI</code> to something like <code>https://test.eia:3000</code>. If you have a custom proxy with path mappings then they need to be added to point exactly to the connectors. Therefore it could be something like <code>https://test.eia:3000/custom/path</code> instead.</p>
+<p>If you don&#39;t set <code>FRONT_END_URI</code> then we will attempt header detection and you will end up with something like <code>https:test.eia:3000</code>. Again, if you have any proxy path mappings then you need to configure this. You can do so with the environment variable <code>FRONT_END_URI_PATH</code>. This will append that value to the detected protocol, host and port.</p>
+<p><strong>NOTE:</strong> You can&#39;t use both <code>FRONT_END_URI</code> and <code>FRONT_END_URI_PATH</code>. <code>FRONT_END_URI</code> is an override, we will ignore all header detection making <code>FRONT_END_URI_PATH</code> useless in the case that it is used.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

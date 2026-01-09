@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Adding a service </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Adding a service ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="adding-a-service">Adding a service</h1>
+
+<p>In this task, you will replace the sample service and schema to align with the NYPD example. For the moment, the service returns some dummy data that you create to i2 Analyze. Later on, it will retrieve real data from the NYPD Complaint Dataset.</p>
+<p>Remember to consult the <a href="../miscellaneous/troubleshoot.html">troubleshooting guide</a> if you come across any issues.</p>
+<h2 id="create-the-nypd-schema">Create the NYPD schema</h2>
+<p>Now that you&#39;ve deployed i2 Analyze and created a connector with a template schema, you can update that schema to represent the data in the NYPD example. To replace the template schema, you will need to:</p>
+<ol>
+<li><p>Remove the <code>schema.xml</code> file from the <code>src</code> directory of your connector project.</p>
+</li>
+<li><p>Create a new directory named <code>schema</code> inside the <code>src</code> directory.</p>
+</li>
+<li><p>Copy <code>nypd-complaint-data-schema.xml</code>, the NYPD complaint schema that you created in <a href="1-schema-design-guide.html">Designing an i2 Analyze connector schema</a>, to the new <code>schema</code> directory.</p>
+<p>Alternatively, you can copy the <a href="https://github.com/i2group/analyze-connect-node-sdk/tree/main/samples/nypd-connector/src/schema/nypd-complaint-data-schema.xml">sample NYPD complaint schema</a> from this repository.</p>
+</li>
+</ol>
+<h2 id="import-the-nypd-schema-into-the-connector-project">Import the NYPD schema into the connector project</h2>
+<p>You have removed the old schema and replaced it with a new one, so you need to update the references to it as well.</p>
+<ol>
+<li><p>In <code>index.ts</code>, replace this <code>import</code> statement:</p>
+<pre><code class="lang-ts">import { schema } from &#39;./schema&#39;;
+</code></pre><p>with:</p>
+<pre><code class="lang-ts">import { nypdcomplaintdataschema as schema } from &#39;./schema/nypd-complaint-data-schema&#39;;
+</code></pre></li>
+<li><p>In the same file, update <code>startConnector()</code> to use the new schema:</p>
+<pre><code class="lang-ts">startConnector({
+  schemas: { connector: schema },
+  hasPersistentResultIds: true,
+});
+</code></pre></li>
+</ol>
+<h2 id="update-the-service">Update the service</h2>
+<p>Still in <code>index.ts</code>, replace the basic service with the following NYPD <code>getAll</code> service, which you&#39;ll develop further in the next steps.</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;getAll&#39;,
+    name: &#39;NYPD Connector: Get all&#39;,
+    description: &#39;A service that retrieves all data.&#39;,
+  },
+  ({ result }) =&gt; {
+    // TODO: Implement the service
+  }
+);
+</code></pre><h3 id="reload-the-connector-configuration-in-i2-analyze">Reload the connector configuration in i2 Analyze</h3>
+<p>To make the new service available, you must reload the connector so that i2 Analyze picks up the configuration changes. Just like when you deployed the connector for the first time, you can use the Admin Console.</p>
+<ol>
+<li><p>Open a web browser and navigate to <a href="https://i2analyze.eia:9443/opal/admin#/connectors"><code>https://i2analyze.eia:9443/opal/admin#/connectors</code></a>.</p>
+</li>
+<li><p>If you are prompted to log in, enter <code>Jenny</code> and <code>Jenny</code> as the username and password.</p>
+</li>
+<li><p>Click the <strong>Reload gateway</strong> button.</p>
+</li>
+</ol>
+<h3 id="investigate-in-analysts-notebook">Investigate in Analyst&#39;s Notebook</h3>
+<p>You can see the consequences of your changes when you try to use the connector from the Analyst&#39;s Notebook desktop client.</p>
+<ol>
+<li><p>Open Analyst&#39;s Notebook and log in when prompted.</p>
+</li>
+<li><p>Click the <strong>External Searches</strong> button in the ribbon. Find the query named <strong>NYPD Connector: Get all</strong>.</p>
+</li>
+<li><p>Click <strong>Open</strong> to run the service.</p>
+</li>
+</ol>
+<p><strong>Note:</strong> Although the service exists, running it returns no data because that part of the implementation is still to come.</p>
+<h3 id="return-some-data">Return some data</h3>
+<p>To make the service return some data, you must add entity and link records to its result, using the methods of the <a href="https://i2group.github.io/analyze-connect-node-sdk/api/i2connect.services.iresult.html"><code>IResult</code> interface</a>.</p>
+<p>Create a file named <code>result-building.ts</code> in the <code>src</code> folder of your connector. You&#39;ll add result-building functions to this file as you progress through the walkthrough.</p>
+<p>You can start with a function for creating links, which will require the following imports:</p>
+<pre><code class="lang-ts">import { services, records, schema as apiSchema } from &#39;@i2analyze/i2connect&#39;;
+</code></pre><p>Next, create an object to represent a <a href="../miscellaneous/source-references.html">source reference</a> that will be set on all entities and links returned by the connector. Source references are useful to users, as they provide provenance information about the data they see. For example:</p>
+<pre><code class="lang-ts">const sourceReference = {
+  name: &#39;NYPD Complaint Dataset&#39;,
+  type: &#39;Open source data&#39;,
+  description:
+    &#39;A dataset containing all valid felony, misdemeanor, and violation crimes reported to the New York City Police Department (NYPD)&#39;,
+};
+</code></pre><p>Add a function for creating links that wraps the <code>addLink()</code> method on the service result and also sets the source reference, as follows:</p>
+<pre><code class="lang-ts">export function addLink(
+  linkType: apiSchema.ILinkType,
+  id: string,
+  fromEnd: records.IResultLinkRecordEnd,
+  toEnd: records.IResultLinkRecordEnd,
+  result: services.IResult
+): void {
+  const link = result.addLink(linkType, id, fromEnd, toEnd);
+  link.setSourceReference(sourceReference);
+}
+</code></pre><p>You can now update the service in <code>index.ts</code> to create a Location and a Complaint entity using the schema entity types, as follows:</p>
+<pre><code class="lang-ts">const { Complaint, Location } = schema.entityTypes;
+const locationEntity = result.addEntity(Location, &#39;Location 1&#39;);
+const complaintEntity = result.addEntity(Complaint, &#39;Complaint 1&#39;);
+</code></pre><p>Then, create a link between the two entity records using the schema link types by importing the <code>addLink()</code> from <code>result-building</code>:</p>
+<pre><code class="lang-ts">import { addLink } from &#39;./result-building&#39;;
+</code></pre><p>And adding the following to the service itself:</p>
+<pre><code class="lang-ts">const { Locatedat } = schema.linkTypes;
+addLink(Locatedat, &#39;Link 1&#39;, complaintEntity, locationEntity, result);
+</code></pre><p>The full <strong>NYPD Connector: Get all</strong> service should now look like this:</p>
+<pre><code class="lang-ts">addService(
+  {
+    id: &#39;getAll&#39;,
+    name: &#39;NYPD Connector: Get all&#39;,
+    description: &#39;A service that retrieves all data.&#39;,
+  },
+  ({ result }) =&gt; {
+    const { Complaint, Location } = schema.entityTypes;
+    const locationEntity = result.addEntity(Location, &#39;Location 1&#39;);
+    const complaintEntity = result.addEntity(Complaint, &#39;Complaint 1&#39;);
+
+    const { Locatedat } = schema.linkTypes;
+    addLink(Locatedat, &#39;Link 1&#39;, complaintEntity, locationEntity, result);
+  }
+);
+</code></pre><p>When the changes have been built, re-run the service from Analyst&#39;s Notebook, and you should see the data returned.</p>
+<p><strong>Note:</strong> When the server is running in developer mode, it picks up any changes you make to the data that the service returns automatically, as soon as you save changes to the source files. You just need to re-run the service, rather than having to reload the i2 Connect gateway.</p>
+<h2 id="querying-data-from-an-external-source">Querying data from an external source</h2>
+<p>Now that you have a basic connector with a working simple service, you can make it more useful by <a href="3-connect-to-eds.html">returning real data</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

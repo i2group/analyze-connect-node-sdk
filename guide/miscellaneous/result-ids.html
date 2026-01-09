@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating identifiers for records in service results </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating identifiers for records in service results ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-identifiers-for-records-in-service-results">Creating identifiers for records in service results</h1>
+
+<p>The records that you return from an external data source must have identifiers that are, at a minimum, unique within a result set. You must also specify whether the identifiers are <em>persistent</em>:</p>
+<ul>
+<li><p>When you state that identifiers are persistent, you guarantee that whenever a service returns data for a particular record, it always has the same identifier.</p>
+</li>
+<li><p>When identifiers are not persistent, the same record data can have a different identifier in different result sets.</p>
+</li>
+</ul>
+<p>Your choice to use persistent identifiers is partly governed by the source, which must provide a way to retrieve or fabricate a reproducible identifier. But the choice also has a significant effect on the end user experience.</p>
+<p><strong>With persistent identifiers</strong></p>
+<p>With persistent identifiers, if a record is returned that matches the identifier of an already charted record, the data on the existing record is overwritten with the new data.</p>
+<p><strong>Without persistent identifiers</strong></p>
+<p>Without persistent identifiers, all records returned are charted as new records. Charting the same record multiple times results in duplicate records if no fusion capabilities are configured.</p>
+<h2 id="data-that-can-be-uniquely-identified">Data that can be uniquely identified</h2>
+<p>For an example of a data source that can support persistent identifiers, consider the following, which contains unique identifiers for all records.</p>
+<h3 id="example-data">Example data</h3>
+<pre><code class="lang-json">{
+  &quot;people&quot;: [
+    {
+      &quot;uid&quot;: &quot;075c8524-9783-48d1-9270-fce2e4c61ad7&quot;,
+      &quot;forename&quot;: &quot;Jane&quot;,
+      &quot;surname&quot;: &quot;Smith&quot;,
+      &quot;dob&quot;: &quot;1960-05-08&quot;
+    },
+    {
+      &quot;uid&quot;: &quot;4d526371-1892-41d1-beb8-096ab65dfb2a&quot;,
+      &quot;forename&quot;: &quot;Jane&quot;,
+      &quot;surname&quot;: &quot;Smith&quot;,
+      &quot;dob&quot;: &quot;1960-05-08&quot;
+    },
+    {
+      &quot;uid&quot;: &quot;aa065534-bd02-4ae8-8aaf-9fbdc1454465&quot;,
+      &quot;forename&quot;: &quot;John&quot;,
+      &quot;surname&quot;: &quot;Smith&quot;,
+      &quot;dob&quot;: &quot;1960-05-08&quot;
+    }
+  ]
+}
+</code></pre><p>Here, the <code>uid</code> key is globally unique across the data source, so it is an ideal candidate to be used as the identifier when constructing results. This behavior means that you can confidently set <code>hasPersistentResultIds</code> to <code>true</code> for the data you are returning, as in the code below.</p>
+<p><strong>Note:</strong> You can set <code>hasPersistentResultIds</code> on individual services, or on the connector when you call <code>startConnector</code>.</p>
+<h3 id="example-service-with-persistent-identifiers">Example service with persistent identifiers</h3>
+<pre><code class="lang-typescript">addService(
+  {
+    id: &#39;sample&#39;,
+    name: &#39;Return people from data source&#39;,
+    hasPersistentResultIds: true,
+  },
+  ({ result }) =&gt; {
+    for (const person of data.people) {
+      const entity = result.addEntity(Person, person.uid);
+
+      entity.setProperties({
+        &#39;First name&#39;: person.forename,
+        &#39;Last name&#39;: person.surname,
+        &#39;Date of birth&#39;: person.dob,
+      });
+    }
+  }
+);
+</code></pre><h2 id="data-that-cannot-be-uniquely-identified-in-a-data-source">Data that cannot be uniquely identified in a data source</h2>
+<p>If you imagine removing <code>uid</code> from the <a href="#example-data">previous example</a>, then the data source no longer contains a strong identifier for the data records. It is not possible to construct a persistent identifier from the pieces of information available, and therefore you must leave <code>hasPersistentResultIds</code> unset (or set it to <code>false</code>).</p>
+<p>In this situation, how you create identifiers for the result records is up to you. The only condition on the identifiers is that they must distinguish between the records in any result set that your service returns.</p>
+<p>There is no value in using record data in the identifers you create. Instead, you might consider:</p>
+<ul>
+<li><p>Using an <a href="https://www.npmjs.com/package/uuid">npm package to generate a unique identifier</a> for each record (see the example below)</p>
+</li>
+<li><p>Using the value of an incrementing counter as you add records</p>
+</li>
+</ul>
+<h3 id="example-service-without-persistent-identifiers">Example service without persistent identifiers</h3>
+<pre><code class="lang-typescript">import { v4 } from &#39;uuid&#39;;
+
+...
+
+addService(
+  {
+    id: &#39;sample&#39;,
+    name: &#39;Return people from data source&#39;,
+    hasPersistentResultIds: false,
+  },
+  ({ result }) =&gt; {
+    for (const person of data.people) {
+      const entity = result.addEntity(Person, v4());
+
+      entity.setProperties({
+        &#39;First name&#39;: person.forename,
+        &#39;Last name&#39;: person.surname,
+        &#39;Date of birth&#39;: person.dob,
+      });
+    }
+  }
+);
+</code></pre><h2 id="link-identifiers">Link identifiers</h2>
+<p>It&#39;s relatively common for a data source to contain unique identifiers for entity data, but less so for links, which are not always a first-class part of the data model.</p>
+<p>To generate a persistent identifier for a link between two ends, you can encode the end identifiers into the link identifier. You should also consider link directionality, as this can change the behavior when users add links to a chart.</p>
+<p>For example, given the identifier template <code>${from}${to}</code>, if you create a link from <code>&quot;A&quot;</code> to <code>&quot;B&quot;</code> and then <code>&quot;B&quot;</code> to <code>&quot;A&quot;</code>, you will have two separate links with identifiers of <code>&quot;AB&quot;</code> and <code>&quot;BA&quot;</code>. If you want a single link to be created in this instance, you must create an identifier without directionality. For example, <code>[from, to].sort().join(&quot;&quot;)</code> will always create an identifier of <code>&quot;AB&quot;</code>.</p>
+<h2 id="best-practices">Best practices</h2>
+<p><strong>Do</strong></p>
+<ul>
+<li>Do spend some time considering and designing the best way to construct identifiers for a particular data source.</li>
+<li>Do try to use a unique identifier for data returned from your connector where possible, as this results in the best user experience.</li>
+<li>Do use non-persistent identifiers if you are uncertain. There are no destructive side effects. However, if fusion capabilities are not configured, users might see duplicated or disconnected data from your services.</li>
+</ul>
+<p><strong>Don&#39;t</strong></p>
+<ul>
+<li><p>Don&#39;t use non-unique data in the identifiers that you create. For example, first name, last name, and date of birth are all poor choices.</p>
+<p>In the <a href="#example-data">example data</a>, if you choose to use the forename as the entity identifier, users will see only two records rather than three. The first &quot;Jane&quot; is overwritten by the second.</p>
+</li>
+<li><p>Don&#39;t set result identifiers to be persistent and then use array indices as the identifier (or part of the identifier).</p>
+<p>Every time data is returned from such a connector, it has the potential to overwrite existing records with different data, based on its position in arrays returned by the data source.</p>
+</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

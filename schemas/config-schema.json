@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://i2group.github.io/analyze-connect-node-sdk/schemas/config-schema.json",
+  "title": "JSON schema for the i2 Connect server configuration file",
+  "$defs": {
+    "logSettings": {
+      "type": "object",
+      "description": "Defines how and where the server sends log messages.",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["error", "warn", "info", "debug"]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "serverPort": {
+      "type": "integer",
+      "description": "The port number for connectors to use. Can be overridden using the environment variable SERVER_PORT."
+    },
+    "ssl": {
+      "type": "object",
+      "description": "Settings for SSL connections to the server.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Determines whether SSL is enabled. Can be overridden using the environment variable SSL_ENABLED."
+        },
+        "serverPort": {
+          "type": "integer",
+          "description": "The port number for SSL connections. Can be overridden using the environment variable SSL_SERVER_PORT."
+        },
+        "certificateFile": {
+          "type": "string",
+          "description": "The path to the .pem file for the certificate. Can be overridden using the environment variable SSL_CERTIFICATE or SSL_CERTIFICATE_FILE."
+        },
+        "privateKeyFile": {
+          "type": "string",
+          "description": "The path to the .pem file for the private key. Can be overridden using the environment variable SSL_PRIVATE_KEY or SSL_PRIVATE_KEY_FILE."
+        },
+        "caCertificateFile": {
+          "type": "string",
+          "description": "The path to the trusted CA certificate. Can be overridden using the environment variable SSL_CA_CERTIFICATE or SSL_CA_CERTIFICATE_FILE."
+        },
+        "passphrase": {
+          "type": "string",
+          "description": "The key passphrase. Can be overridden using the environment variable SSL_PASSPHRASE."
+        },
+        "gatewayCN": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "The gateway common name, which can be a string or an array of strings. Can be overridden using the environment variable SSL_GATEWAY_CN."
+        },
+        "ocspChecking": {
+          "type": "object",
+          "description": "OCSP settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Determines whether OCSP certificate checking is enabled. Can be overridden using the environment variable SSL_OCSP_CHECKING_ENABLED."
+            },
+            "fallbackResponder": {
+              "type": "string",
+              "description": "The URI to fall back to for OCSP checking. Can be overridden using the environment variable SSL_OCSP_FALLBACK_RESPONDER."
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "enabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["serverPort", "certificateFile", "privateKeyFile", "gatewayCN", "caCertificateFile"]
+      }
+    },
+    "log": {
+      "allOf": [{ "$ref": "#/$defs/logSettings" }],
+      "properties": {
+        "fileLogging": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Determines whether file logging is enabled. Can be overridden using the environment variable LOG_FILE_LOGGING_ENABLED."
+            },
+            "dir": {
+              "type": "string",
+              "description": "The directory to log to. Can be overridden using the environment variable LOG_FILE_LOGGING_DIR."
+            }
+          }
+        },
+        "level": {
+          "description": "The minimum message level to log. Messages at lower levels are ignored. Can be overridden using the environment variable LOG_LEVEL."
+        }
+      },
+      "additionalProperties": {
+        "allOf": [{ "$ref": "#/$defs/logSettings" }],
+        "properties": {
+          "level": {
+            "description": "The minimum message level to log. Messages at lower levels are ignored. Can be overridden using the environment variable LOG_X_LEVEL, where X is the identifier of the additional logger in uppercase letters."
+          }
+        }
+      }
+    },
+    "jwt": {
+      "type": "object",
+      "description": "JWT settings",
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "description": "Determines whether JWT checking is required. Can be overridden using the environment variable JWT_REQUIRED."
+        },
+        "secret": {
+          "type": "string",
+          "description": "The secret that verifies a JWT in either 'x-access-token' or the 'authorization' header, in the format 'JWT {token}'. Can be overridden using the environment variable JWT_SECRET."
+        }
+      },
+      "if": {
+        "properties": {
+          "required": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["secret"]
+      }
+    },
+    "required": ["serverPort"]
+  }
+}

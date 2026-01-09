@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Worked example </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Worked example ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Connect SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="worked-example">Worked example</h1>
+
+<p>This part of the SDK documentation demonstrates the process of setting a up a development environment and creating a connector through a worked example.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>This guide is designed as a continuation of <a href="../getting-started.html">Getting Started</a>, so be sure to have completed that topic before you continue.</p>
+<h2 id="developing-a-connector">Developing a connector</h2>
+<p>The procedure for understanding, deploying, and configuring both i2 Analyze and the example connector is divided into the following sections:</p>
+<ol>
+<li><a href="1-schema-design-guide.html">Designing an i2 Analyze connector schema</a></li>
+<li><a href="2-add-service.html">Adding a service</a></li>
+<li><a href="3-connect-to-eds.html">Querying an external data source</a></li>
+<li><a href="4-parameterized-search.html">Implementing parameterized searches</a></li>
+<li><a href="5-seeded-search.html">Implementing seeded searches</a></li>
+<li><a href="6-seeded-parameterized-search.html">Implementing seeded, parameterized searches</a></li>
+<li><a href="7-validation.html">Validating requests</a></li>
+<li><a href="8-packaging-and-distribution.html">Packaging and distribution</a></li>
+</ol>
+<h2 id="system-requirements">System requirements</h2>
+<p>The example requires the following tools and technologies:</p>
+<ul>
+<li><p><strong>i2 Analyze 4.4.4</strong>: The server that hosts the i2 Connect gateway.</p>
+</li>
+<li><p><strong>i2 Analyst&#39;s Notebook 10.0.2</strong>: The client that provides the user interface for interacting with your connector. The client displays the resulting entity and link records with their properties.</p>
+</li>
+<li><p><strong>i2 Analyze Schema Designer</strong>: The tool that enables you to design and create your i2 Analyze schema. During installation of Analyst&#39;s Notebook, ensure that you also install Schema Designer.</p>
+</li>
+<li><p><strong>Microsoft Visual Studio Code</strong>: The recommended IDE for developing your connector. You can use any IDE you like, but the Visual Studio Code Spring Boot Dashboard plugin can handle running and redeploying the connector for you. Download it <a href="https://code.visualstudio.com/">here</a>.</p>
+</li>
+<li><p><strong>Node.js Express</strong>: The connector is written with in Node with Express, which is a lightweight web application framework.</p>
+</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>
